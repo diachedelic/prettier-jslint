@@ -10,6 +10,7 @@ const {
     concat,
     line,
     softline,
+    hardline,
     group,
     indent,
     align,
@@ -153,8 +154,6 @@ function printTernaryOperator(path, options, print, operatorOptions) {
   const isParentTest =
     parent.type === operatorOptions.conditionalNodeType &&
     operatorOptions.testNodePropertyNames.some((prop) => parent[prop] === node);
-  let forceNoIndent =
-    parent.type === operatorOptions.conditionalNodeType && !isParentTest;
 
   // Find the outermost non-ConditionalExpression parent, and the outermost
   // ConditionalExpression parent. We'll use these to determine if we should
@@ -184,7 +183,6 @@ function printTernaryOperator(path, options, print, operatorOptions) {
       conditionalExpressionChainContainsJSX(lastConditionalParent))
   ) {
     jsxMode = true;
-    forceNoIndent = true;
 
     // Even though they don't need parens, we wrap (almost) everything in
     // parens when using ?: within JSX, because the parens are analogous to
@@ -225,7 +223,7 @@ function printTernaryOperator(path, options, print, operatorOptions) {
       consequentNode.type === operatorOptions.conditionalNodeType
         ? ifBreak("", "(")
         : "",
-      align(2, path.call(print, operatorOptions.consequentNodePropertyName)),
+      path.call(print, operatorOptions.consequentNodePropertyName),
       consequentNode.type === operatorOptions.conditionalNodeType
         ? ifBreak("", ")")
         : "",
@@ -233,7 +231,7 @@ function printTernaryOperator(path, options, print, operatorOptions) {
       ": ",
       alternateNode.type === operatorOptions.conditionalNodeType
         ? path.call(print, operatorOptions.alternateNodePropertyName)
-        : align(2, path.call(print, operatorOptions.alternateNodePropertyName)),
+        : path.call(print, operatorOptions.alternateNodePropertyName),
     ]);
     parts.push(
       parent.type !== operatorOptions.conditionalNodeType ||
@@ -242,35 +240,14 @@ function printTernaryOperator(path, options, print, operatorOptions) {
         ? part
         : options.useTabs
         ? dedent(indent(part))
-        : align(Math.max(0, options.tabWidth - 2), part)
+        : part
     );
   }
 
-  // We want a whole chain of ConditionalExpressions to all
-  // break if any of them break. That means we should only group around the
-  // outer-most ConditionalExpression.
-  const comments = flat([
-    ...operatorOptions.testNodePropertyNames.map(
-      (propertyName) => node[propertyName].comments
-    ),
-    consequentNode.comments,
-    alternateNode.comments,
-  ]).filter(Boolean);
-  const shouldBreak = comments.some(
-    (comment) =>
-      handleComments.isBlockComment(comment) &&
-      hasNewlineInRange(
-        options.originalText,
-        options.locStart(comment),
-        options.locEnd(comment)
-      )
-  );
   const maybeGroup = (doc) =>
     parent === firstNonConditionalParent
-      ? group(doc, { shouldBreak })
-      : shouldBreak
-      ? concat([doc, breakParent])
-      : doc;
+      ? group(doc, { shouldBreak: true })
+      : concat([doc, breakParent]);
 
   // Break the closing paren to keep the chain right after it:
   // (a
@@ -302,15 +279,38 @@ function printTernaryOperator(path, options, print, operatorOptions) {
           parent[operatorOptions.alternateNodePropertyName] === node
             ? align(2, testDoc)
             : testDoc)(concat(operatorOptions.beforeParts())),
-        forceNoIndent ? concat(parts) : indent(concat(parts)),
+        concat(parts),
         operatorOptions.afterParts(breakClosingParen)
       )
     )
   );
 
-  return isParentTest
-    ? group(concat([indent(concat([softline, result])), softline]))
-    : result;
+  return group(
+    // avoid doubling up on parentheses when the node is:
+    (
+      // a single argument in an invocation
+      parent.type === "CallExpression" &&
+      parent.arguments.length === 1 &&
+      parent.arguments[0] === node
+    )
+    ? result
+    : (
+      // invoked
+      parent.type === "CallExpression" &&
+      parent.callee === node
+    )
+    ? concat([
+      indent(concat([hardline, result])),
+      hardline,
+    ])
+    // otherwise add parenthesis
+    : concat([
+      "(",
+      indent(concat([hardline, result])),
+      hardline,
+      ")"
+    ])
+  );
 }
 
 module.exports = printTernaryOperator;
