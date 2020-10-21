@@ -700,18 +700,18 @@ function printPathNoParens(path, options, print, args) {
 
       // We want to always keep these types of nodes on the same line
       // as the arrow.
-      if (
-        !hasLeadingOwnLineComment(options.originalText, n.body, options) &&
-        (n.body.type === "ArrayExpression" ||
-          n.body.type === "ObjectExpression" ||
-          n.body.type === "BlockStatement" ||
-          isJSXNode(n.body) ||
-          isTemplateOnItsOwnLine(n.body, options.originalText, options) ||
-          n.body.type === "ArrowFunctionExpression" ||
-          n.body.type === "DoExpression")
-      ) {
+      // if (
+      //   !hasLeadingOwnLineComment(options.originalText, n.body, options) &&
+      //   (n.body.type === "ArrayExpression" ||
+      //     n.body.type === "ObjectExpression" ||
+      //     n.body.type === "BlockStatement" ||
+      //     isJSXNode(n.body) ||
+      //     isTemplateOnItsOwnLine(n.body, options.originalText, options) ||
+      //     n.body.type === "ArrowFunctionExpression" ||
+      //     n.body.type === "DoExpression")
+      // ) {
         return group(concat([concat(parts), " ", body]));
-      }
+      // }
 
       // We handle sequence expressions as the body of arrows specially,
       // so that the required parentheses end up on their own lines.

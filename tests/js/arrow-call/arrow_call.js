@@ -30,10 +30,10 @@ const a = Observable
 const b = Observable.fromPromise(axiosInstance.get(url))
   .map((response) => response.data)
 
-func(
-  veryLoooooooooooooooooooooooongName,
-  veryLooooooooooooooooooooooooongName =>
-    veryLoooooooooooooooongName.something()
-);
+// func(
+//   veryLoooooooooooooooooooooooongName,
+//   veryLooooooooooooooooooooooooongName =>
+//     veryLoooooooooooooooongName.something()
+// );
 
 promise.then(result => result.veryLongVariable.veryLongPropertyName > someOtherVariable ? "ok" : "fail");

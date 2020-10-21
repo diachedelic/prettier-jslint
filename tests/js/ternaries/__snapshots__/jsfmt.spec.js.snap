@@ -1,10 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`binary.js - {"tabWidth":4} format 1`] = `
+exports[`binary.js - {"tabWidth":4,"trailingComma":"none","bracketSpacing":false,"arrowParens":"always"} format 1`] = `
 ====================================options=====================================
+arrowParens: "always"
+bracketSpacing: false
 parsers: ["babel", "flow", "typescript"]
 printWidth: 80
 tabWidth: 4
+trailingComma: "none"
                                                                                 | printWidth
 =====================================input======================================
 room = room.map((row, rowIndex) => (
@@ -14,27 +17,26 @@ room = room.map((row, rowIndex) => (
 ))
 
 =====================================output=====================================
-room = room.map((row, rowIndex) =>
-    row.map((col, colIndex) =>
-        (
-            rowIndex === 0 ||
-            colIndex === 0 ||
-            rowIndex === height ||
-            colIndex === width
-            ? 1
-            : 0
-        )
-    )
-);
+room = room.map((row, rowIndex) => row.map((col, colIndex) => (
+    rowIndex === 0 ||
+    colIndex === 0 ||
+    rowIndex === height ||
+    colIndex === width
+    ? 1
+    : 0
+)));
 
 ================================================================================
 `;
 
-exports[`func-call.js - {"tabWidth":4} format 1`] = `
+exports[`func-call.js - {"tabWidth":4,"trailingComma":"none","bracketSpacing":false,"arrowParens":"always"} format 1`] = `
 ====================================options=====================================
+arrowParens: "always"
+bracketSpacing: false
 parsers: ["babel", "flow", "typescript"]
 printWidth: 80
 tabWidth: 4
+trailingComma: "none"
                                                                                 | printWidth
 =====================================input======================================
 fn(
@@ -87,11 +89,14 @@ fn(
 ================================================================================
 `;
 
-exports[`indent.js - {"tabWidth":4} format 1`] = `
+exports[`indent.js - {"tabWidth":4,"trailingComma":"none","bracketSpacing":false,"arrowParens":"always"} format 1`] = `
 ====================================options=====================================
+arrowParens: "always"
+bracketSpacing: false
 parsers: ["babel", "flow", "typescript"]
 printWidth: 80
 tabWidth: 4
+trailingComma: "none"
                                                                                 | printWidth
 =====================================input======================================
 aaaaaaaaaaaaaaa ? bbbbbbbbbbbbbbbbbb : ccccccccccccccc ? ddddddddddddddd : eeeeeeeeeeeeeee ? fffffffffffffff : gggggggggggggggg
@@ -294,30 +299,30 @@ a
 (
     a
     ? {
-        a: 0,
+        a: 0
     }
     : {
         a: (
             {
-                a: 0,
+                a: 0
             }
             ? {
-                a: 0,
+                a: 0
             }
             : {
                 y: (
                     {
-                        a: 0,
+                        a: 0
                     }
                     ? {
-                        a: 0,
+                        a: 0
                     }
                     : {
-                        a: 0,
+                        a: 0
                     }
-                ),
+                )
             }
-        ),
+        )
     }
 );
 
@@ -338,38 +343,38 @@ a
                                         a
                                         ? [0, 1]
                                         : []
-                                    ),
-                                ],
+                                    )
+                                ]
                             }
                             : [
                                 [
                                     0,
                                     {
-                                        a: 0,
+                                        a: 0
                                     },
                                     (
                                         a
                                         ? 0
                                         : 1
-                                    ),
+                                    )
                                 ],
                                 function () {
                                     return (
                                         a
                                         ? {
-                                            a: 0,
+                                            a: 0
                                         }
                                         : [
                                             {
-                                                a: 0,
+                                                a: 0
                                             },
-                                            {},
+                                            {}
                                         ]
                                     );
-                                },
+                                }
                             ]
-                        ),
-                    ],
+                        )
+                    ]
                 }
                 : [
                     (
@@ -381,8 +386,8 @@ a
                                     a
                                     ? {
                                         a: a({
-                                            a: 0,
-                                        }),
+                                            a: 0
+                                        })
                                     }
                                     : [
                                         0,
@@ -390,13 +395,13 @@ a
                                         a(
                                             a(),
                                             {
-                                                a: 0,
+                                                a: 0
                                             },
                                             (
                                                 a
                                                 ? a()
                                                 : a({
-                                                    a: 0,
+                                                    a: 0
                                                 })
                                             )
                                         ),
@@ -404,16 +409,16 @@ a
                                             a()
                                             ? {
                                                 a: a(),
-                                                b: [],
+                                                b: []
                                             }
                                             : {}
-                                        ),
+                                        )
                                     ]
                                 )
                                 : a(
                                     a()
                                     ? {
-                                        a: 0,
+                                        a: 0
                                     }
                                     : (function (a) {
                                         return (
@@ -421,20 +426,20 @@ a
                                             ? [
                                                 {
                                                     a: 0,
-                                                    b: a(),
-                                                },
+                                                    b: a()
+                                                }
                                             ]
                                             : a([
                                                 (
                                                     a
                                                     ? {
-                                                        a: 0,
+                                                        a: 0
                                                     }
                                                     : {}
                                                 ),
                                                 {
-                                                    a: 0,
-                                                },
+                                                    a: 0
+                                                }
                                             ])
                                         );
                                     })(
@@ -454,10 +459,10 @@ a
                             );
                         }
                         : function () {}
-                    ),
+                    )
                 ]
             );
-        },
+        }
     }
     : a
 );
@@ -465,11 +470,14 @@ a
 ================================================================================
 `;
 
-exports[`nested.js - {"tabWidth":4} format 1`] = `
+exports[`nested.js - {"tabWidth":4,"trailingComma":"none","bracketSpacing":false,"arrowParens":"always"} format 1`] = `
 ====================================options=====================================
+arrowParens: "always"
+bracketSpacing: false
 parsers: ["babel", "flow", "typescript"]
 printWidth: 80
 tabWidth: 4
+trailingComma: "none"
                                                                                 | printWidth
 =====================================input======================================
 const message =
@@ -567,11 +575,14 @@ const paymentMessage2 =
 ================================================================================
 `;
 
-exports[`parenthesis.js - {"tabWidth":4} format 1`] = `
+exports[`parenthesis.js - {"tabWidth":4,"trailingComma":"none","bracketSpacing":false,"arrowParens":"always"} format 1`] = `
 ====================================options=====================================
+arrowParens: "always"
+bracketSpacing: false
 parsers: ["babel", "flow", "typescript"]
 printWidth: 80
 tabWidth: 4
+trailingComma: "none"
                                                                                 | printWidth
 =====================================input======================================
 debug ? this.state.isVisible ? "partially visible" : "hidden" : null;
@@ -601,28 +612,25 @@ a => a ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa : a
     : null
 );
 
-(a) =>
-    (
-        a
-        ? () => {
-            a;
-        }
-        : () => {
-            a;
-        }
-    );
-(a) =>
-    (
-        a
-        ? a
-        : a
-    );
-(a) =>
-    (
-        a
-        ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa
-        : a
-    );
+(a) => (
+    a
+    ? () => {
+        a;
+    }
+    : () => {
+        a;
+    }
+);
+(a) => (
+    a
+    ? a
+    : a
+);
+(a) => (
+    a
+    ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa
+    : a
+);
 
 ================================================================================
 `;
