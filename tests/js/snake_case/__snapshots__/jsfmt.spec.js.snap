@@ -12,6 +12,12 @@ function getAltRouteGroups(altRoutes) {
     return true;
 }
 
+const x = {
+  thingStuff(myDog) {
+    myDog = 2;
+  }
+};
+
 export default (mainRoute, altRoutes = []) => {
     mainRoute = getAltRouteGroups(altRoutes);
 };
@@ -22,6 +28,12 @@ function get_alt_route_groups(alt_routes) {
     thingStuff.altRoutes = [alt_routes];
     return true;
 }
+
+const x = {
+    thingStuff(my_dog) {
+        my_dog = 2;
+    }
+};
 
 export default (main_route, alt_routes = []) => {
     main_route = get_alt_route_groups(alt_routes);
