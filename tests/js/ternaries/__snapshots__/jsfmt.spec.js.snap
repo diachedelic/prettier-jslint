@@ -518,7 +518,7 @@ const message =
         )
     );
 
-const paymentMessage =
+const payment_message =
     (
         state == "success"
         ? "Payment completed successfully"
@@ -537,7 +537,7 @@ const paymentMessage =
         )
     );
 
-const paymentMessage2 =
+const payment_message2 =
     (
         state == "success"
         ? 1 //'Payment completed successfully'
@@ -571,6 +571,9 @@ debug ? this.state.isVisible && somethingComplex ? "partially visible" : "hidden
 a => a ? () => {a} : () => {a}
 a => a ? a : a
 a => a ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa : a
+
+str = min + ":" + (sec < 10 ? "0" + sec : sec);
+str = (sec < 10 ? "0" + sec : sec) + ":" + min;
 
 =====================================output=====================================
 (
@@ -611,6 +614,23 @@ a => a ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa : a
     ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa
     : a
 );
+
+str =
+    min +
+    ":" +
+    (
+        sec < 10
+        ? "0" + sec
+        : sec
+    );
+str =
+    (
+        sec < 10
+        ? "0" + sec
+        : sec
+    ) +
+    ":" +
+    min;
 
 ================================================================================
 `;

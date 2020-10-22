@@ -4,3 +4,6 @@ debug ? this.state.isVisible && somethingComplex ? "partially visible" : "hidden
 a => a ? () => {a} : () => {a}
 a => a ? a : a
 a => a ? aasdasdasdasdasdasdaaasdasdasdasdasdasdasdasdasdasdasdasdasdaaaaaa : a
+
+str = min + ":" + (sec < 10 ? "0" + sec : sec);
+str = (sec < 10 ? "0" + sec : sec) + ":" + min;

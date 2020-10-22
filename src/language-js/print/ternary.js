@@ -295,9 +295,13 @@ function printTernaryOperator(path, options, print, operatorOptions) {
     )
     ? result
     : (
-      // invoked
-      parent.type === "CallExpression" &&
-      parent.callee === node
+      (
+        // invoked
+        parent.type === "CallExpression" &&
+        parent.callee === node
+      ) || (
+        parent.type === "BinaryExpression"
+      )
     )
     ? concat([
       indent(concat([hardline, result])),
