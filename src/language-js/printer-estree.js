@@ -126,6 +126,85 @@ const needsQuoteProps = new WeakMap();
 
 let uid = 0;
 
+function getScopes(path) {
+  const scopes = path.stack.reduceRight(function (scopes, node) {
+    return (
+      (
+        node.type === "FunctionDeclaration" ||
+        node.type === "BlockStatement" ||
+        node.type === "Program"
+      )
+      ? scopes.concat(node)
+      : scopes
+    );
+  }, []);
+  scopes.forEach(function (node) {
+    if (!node.declared) {
+      node.declared = [];
+    }
+  });
+  return scopes;
+}
+
+function declareName(name, path) {
+  getScopes(path)[0].declared.push(name);
+}
+
+function rename(name) {
+  if (/^[A-Z]/.test(name)) {
+    // Capitalised names are used to indicate "new".
+    return name;
+  }
+  const camel_rx = /([A-Z])(?=[A-Z][a-z0-9])|([a-z0-9])(?=[A-Z])/g;
+  const parts = name.replace(camel_rx, "$& ").split(" ");
+  return parts.map(function (part) {
+    return (
+      /[^A-Z]/.test(part)
+      ? part.toLowerCase()
+      : part // acronym
+    );
+  }).join("_");
+}
+
+function isPropertyName(path) {
+  let height = 0;
+  while (true) {
+    const node = path.getNode(height);
+    const parent = path.getNode(height + 1);
+    if (parent.type !== "MemberExpression") {
+      return false;
+    }
+    if (parent.property === node && !parent.computed) {
+      return true;
+    }
+    height += 1;
+  }
+}
+
+function evaluateName(name, path) {
+  return (
+    (
+      getScopes(path).some(scope => scope.declared.includes(name)) &&
+      !isPropertyName(path)
+    )
+    ? rename(name)
+    : name
+  )
+}
+
+function printIdentifier(path) {
+  const node = path.getValue();
+  const parent = path.getParentNode();
+  return (
+    (
+      parent.type === "ObjectProperty" &&
+      parent.key === node
+    )
+    ? node.name
+    : evaluateName(node.name, path)
+  );
+}
+
 function genericPrint(path, options, printPath, args) {
   const node = path.getValue();
   let needsParens = false;
@@ -623,7 +702,7 @@ function printPathNoParens(path, options, print, args) {
       return concat(parts);
     case "Identifier": {
       return concat([
-        n.name,
+        printIdentifier(path),
         printOptionalToken(path),
         printTypeAnnotation(path, options, print),
       ]);
@@ -643,6 +722,12 @@ function printPathNoParens(path, options, print, args) {
       ]);
     case "FunctionDeclaration":
     case "FunctionExpression":
+      if (n.id) {
+        const parentPath = Object.assign({}, path, {
+          stack: path.stack.slice(0, -2)
+        });
+        declareName(n.id.name, parentPath);
+      }
       parts.push(printFunctionDeclaration(path, print, options));
       if (!n.body) {
         parts.push(semi);
@@ -853,6 +938,12 @@ function printPathNoParens(path, options, print, args) {
     case "ExportDefaultSpecifier":
       return path.call(print, "exported");
     case "ImportDeclaration": {
+      n.specifiers.forEach(function (node) {
+        if (node.type === "ImportDefaultSpecifier") {
+          declareName(node.local.name, path);
+        }
+      });
+
       parts.push("import");
 
       if (n.importKind && n.importKind !== "value") {
@@ -1271,7 +1362,11 @@ function printPathNoParens(path, options, print, args) {
         return printMethod(path, options, print);
       }
 
-      if (n.shorthand) {
+      if (
+        n.shorthand &&
+        n.value.type === "Identifier" &&
+        n.value.name === evaluateName(n.value.name, path)
+      ) {
         parts.push(path.call(print, "value"));
       } else {
         parts.push(
@@ -1517,6 +1612,9 @@ function printPathNoParens(path, options, print, args) {
         testNodePropertyNames: ["test"],
       });
     case "VariableDeclaration": {
+      n.declarations.forEach(function ({ id }) {
+        declareName(id.name, path);
+      });
       const printed = path.map((childPath) => {
         return print(childPath);
       }, "declarations");
@@ -1585,6 +1683,9 @@ function printPathNoParens(path, options, print, args) {
       return group(concat(parts));
     }
     case "VariableDeclarator":
+      if (n.id.type === "Identifier") {
+        declareName(n.id.name, path);
+      }
       return printAssignment(
         n.id,
         path.call(print, "id"),
@@ -3881,6 +3982,20 @@ function printFunctionParams(path, print, options, expandArg, printTypeParams) {
   const shouldExpandParameters =
     expandArg &&
     !(fun[paramsField] && fun[paramsField].some((n) => n.comments));
+
+  if (fun[paramsField]) {
+    fun[paramsField].forEach(function (node) {
+      if (node.type === "Identifier") {
+        return declareName(node.name, path);
+      }
+      if (
+        node.type === "AssignmentPattern" &&
+        node.left.type === "Identifier"
+      ) {
+        return declareName(node.left.name, path);
+      }
+    });
+  }
 
   const typeParams = printTypeParams
     ? printFunctionTypeParameters(path, options, print)
