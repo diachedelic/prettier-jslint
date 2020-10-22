@@ -1016,7 +1016,23 @@ function printPathNoParens(path, options, print, args) {
         return "{}";
       }
 
-      parts.push("{");
+      const is_naked = !(
+          parent.type === "ArrowFunctionExpression" ||
+          parent.type === "FunctionExpression" ||
+          parent.type === "FunctionDeclaration" ||
+          parent.type === "ObjectMethod" ||
+          parent.type === "ClassMethod" ||
+          parent.type === "ClassPrivateMethod" ||
+          parent.type === "ForStatement" ||
+          parent.type === "WhileStatement" ||
+          parent.type === "DoWhileStatement" ||
+          parent.type === "DoExpression" ||
+          (parent.type === "CatchClause" && !parentParent.finalizer) ||
+          parent.type === "TSModuleDeclaration" ||
+          parent.type === "TSDeclareFunction"
+      );
+
+      parts.push(is_naked ? "(function () {" : "{");
 
       // Babel 6
       if (hasDirectives) {
@@ -1039,7 +1055,7 @@ function printPathNoParens(path, options, print, args) {
       }
 
       parts.push(comments.printDanglingComments(path, options));
-      parts.push(hardline, "}");
+      parts.push(hardline, is_naked ? "}());" : "}");
 
       return concat(parts);
     }
