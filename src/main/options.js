@@ -96,10 +96,19 @@ function normalize(options, opts) {
     rawOptions.trailingComma = "none";
   }
 
-  return normalizer.normalizeApiOptions(rawOptions, supportOptions, {
-    passThrough: Object.keys(hiddenDefaults),
-    ...opts,
-  });
+  return Object.assign(
+    normalizer.normalizeApiOptions(rawOptions, supportOptions, {
+      passThrough: Object.keys(hiddenDefaults),
+      ...opts,
+    }), {
+      // JSLint friendly options
+      printWidth: 80,
+      tabWidth: 4,
+      trailingComma: "none",
+      bracketSpacing: false,
+      arrowParens: "always",
+    }
+  );
 }
 
 function getPlugin(options) {

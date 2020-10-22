@@ -1,13 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`arrow_call.js - {"tabWidth":4,"trailingComma":"none","bracketSpacing":false,"arrowParens":"always"} format 1`] = `
+exports[`arrow_call.js format 1`] = `
 ====================================options=====================================
-arrowParens: "always"
-bracketSpacing: false
 parsers: ["babel", "flow", "typescript"]
 printWidth: 80
-tabWidth: 4
-trailingComma: "none"
                                                                                 | printWidth
 =====================================input======================================
 const testResults = results.testResults.map(testResult =>
