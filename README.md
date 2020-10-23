@@ -16,24 +16,12 @@ migrating a javascript project to [JSLint](https://jslint.com/).
 - Wrap long comments (or move to start of line)
 - Replace `isNaN` with `Number.isNaN` (also `parseInt` etc)
 - Method chaining
-- Vue components
 
 #### Replace spaces in regexps with `\s`, and escape hyphens`[-]`
 ```
 /[^0-9a-zA-Z-] foo/
 // becomes
 /[^\-0-9a-zA-Z]\sfoo/
-```
-
-#### Replace block arrow functions with `function`
-```
-const unwrap_coordinates = (coordinates) => {
-    console.log(coordinates);
-};
-// becomes
-function unwrap_coordinates(coordinates) {
-    console.log(coordinates);
-};
 ```
 
 ---

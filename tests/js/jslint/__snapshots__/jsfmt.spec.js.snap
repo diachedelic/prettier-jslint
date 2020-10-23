@@ -53,7 +53,7 @@ const test_results = results.testResults.map((test_result) => formatResult(
     reporter
 ));
 
-it("mocks regexp instances", () => {
+it("mocks regexp instances", function () {
     expect(() => moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(/a/)
     )).not.toThrow();
@@ -100,6 +100,128 @@ promise.then((result) => (
     ? "ok"
     : "fail"
 ));
+
+================================================================================
+`;
+
+exports[`arrow_statement_body.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const unwrap_coordinates = (b) => {
+    const inner = (a) => {
+        console.log(() => {
+          let x;
+        });
+    };
+};
+
+function not_like_this_not_like_this() {
+  this.foo();
+  const unwrap_coordinates = (b) => {
+      const inner = (a) => {
+          this.foo();
+          console.log(a);
+      };
+      function method() {
+          this.foo(() => {
+            this.bar();
+          });
+          foo(() => {
+            bar();
+          });
+      }
+  };
+}
+
+function abc() {
+  const def = (g) => {
+    function hij(k) {
+      const lmn = (o) => {
+        this.pqr(() => {
+          stu();
+        });
+
+        const v = () => {
+          return {
+            xyz() {
+              return this.abc;
+            }
+          };
+        }
+
+        const w = () => {
+          return class Stuff {
+            xyz() {
+              return this.abc;
+            }
+          };
+        };
+
+        const x = () => true;
+      }
+    }
+  };
+}
+
+=====================================output=====================================
+function unwrap_coordinates(b) {
+    function inner(a) {
+        console.log(function () {
+            let x;
+        });
+    }
+}
+
+function not_like_this_not_like_this() {
+    this.foo();
+    const unwrap_coordinates = (b) => {
+        const inner = (a) => {
+            this.foo();
+            console.log(a);
+        };
+        function method() {
+            this.foo(() => {
+                this.bar();
+            });
+            foo(function () {
+                bar();
+            });
+        }
+    };
+}
+
+function abc() {
+    function def(g) {
+        function hij(k) {
+            const lmn = (o) => {
+                this.pqr(function () {
+                    stu();
+                });
+
+                function v() {
+                    return {
+                        xyz() {
+                            return this.abc;
+                        }
+                    };
+                }
+
+                function w() {
+                    return class Stuff {
+                        xyz() {
+                            return this.abc;
+                        }
+                    };
+                }
+
+                const x = () => true;
+            };
+        }
+    }
+}
 
 ================================================================================
 `;
@@ -309,9 +431,9 @@ const x = {
     }
 };
 
-export default (main_route, alt_routes = []) => {
+export default (function (main_route, alt_routes = []) {
     main_route = get_alt_route_groups(alt_routes);
-};
+});
 
 ================================================================================
 `;
@@ -950,10 +1072,10 @@ let i = inc > 0 ? 0 : main_route.features.length - 1;
 
 (a) => (
     a
-    ? () => {
+    ? function () {
         a;
     }
-    : () => {
+    : function () {
         a;
     }
 );

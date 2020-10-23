@@ -205,6 +205,38 @@ function printIdentifier(path) {
   );
 }
 
+function usesThis(node) {
+  if (!node || typeof node.type !== "string") {
+    // not a node
+    return false;
+  }
+
+  const defines_another_this = [
+    "ClassMethod",
+    "ClassPrivateMethod",
+    "ObjectMethod",
+    "FunctionDeclaration",
+    "FunctionExpression"
+  ];
+
+  if (defines_another_this.includes(node.type)) {
+    return false;
+  }
+
+  if (node.type === "ThisExpression") {
+    return true;
+  }
+
+  // recurse
+  return Object.keys(node).some(function (key) {
+    return (
+      Array.isArray(node[key])
+      ? node[key].some(usesThis)
+      : usesThis(node[key])
+    );
+  })
+}
+
 function genericPrint(path, options, printPath, args) {
   const node = path.getValue();
   let needsParens = false;
@@ -734,6 +766,14 @@ function printPathNoParens(path, options, print, args) {
       }
       return concat(parts);
     case "ArrowFunctionExpression": {
+      if (
+        n.body &&
+        n.body.type === "BlockStatement" &&
+        !usesThis(n)) {
+        n.type = "FunctionExpression";
+        return printPathNoParens(path, options, print, args);
+      }
+
       if (n.async) {
         parts.push("async ");
       }
@@ -1617,6 +1657,33 @@ function printPathNoParens(path, options, print, args) {
         testNodePropertyNames: ["test"],
       });
     case "VariableDeclaration": {
+      // Rewrite named arrow function as a function declaration.
+      if (
+        n.declarations.length === 1 &&
+        n.declarations[0].init &&
+        n.declarations[0].init.type === "ArrowFunctionExpression" &&
+        n.declarations[0].init.body.type === "BlockStatement" &&
+        !usesThis(n.declarations[0].init)
+      ) {
+        const fn = n.declarations[0].init;
+        fn.type = "FunctionDeclaration";
+        fn.id = n.declarations[0].id;
+        fn.comments = n.comments;
+        fn.trailingComments = n.trailingComments;
+        const { stack } = path;
+        const index = stack[stack.length - 2];
+        const statements = stack[stack.length - 3];
+        statements[index] = fn;
+        stack[stack.length - 1] = fn;
+        path.stack = stack;
+        return printPathNoParens(
+          path,
+          options,
+          print,
+          args
+        );
+      }
+
       n.declarations.forEach(function ({ id }) {
         declareName(id.name, path);
       });
