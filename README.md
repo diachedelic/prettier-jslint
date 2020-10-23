@@ -18,11 +18,15 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Replaces ++/-- with +=/-= where possible
 
 ## TODO
-- Insert `/*jslint node */` etc
+- Insert `/*jslint node, this, browser */` etc
 - Wrap long comments (or move to start of line)
 - Object literals (each property on separate line if multiple or :)
 - Linebreaks between multiple function parameters & destructured objects
 - Escape hyphens in regexps character classes
+- Replace unused "err" in catch clause with "ignore"
+- Naked blocks around cases in switch
+- Undeclared 'it'
+- Use double quotes, not single quotes
 
 ---
 
