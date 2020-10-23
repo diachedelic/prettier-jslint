@@ -5119,6 +5119,22 @@ function printBinaryishExpressions(
 
   const node = path.getValue();
 
+  if (
+    node.left.operator === "typeof" &&
+    node.right.type === "StringLiteral" &&
+    node.right.value === "undefined" &&
+    (
+      node.operator === "===" ||
+      node.operator === "!=="
+    )
+  ) {
+    node.left = node.left.argument;
+    node.right = {
+      type: "Identifier",
+      name: "undefined"
+    };
+  }
+
   // We treat BinaryExpression and LogicalExpression nodes the same.
   if (isBinaryish(node)) {
     // Put all operators with the same precedence level in the same

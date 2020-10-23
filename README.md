@@ -11,6 +11,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Naked blocks -> self executing anonymous functions
 - Assignment
 - Frozen exports
+- typeof x === "undefined" => x === undefined
 
 ## Not covered yet
 - Insert `/*jslint node */` etc
