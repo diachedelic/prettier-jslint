@@ -234,6 +234,80 @@ function abc() {
 ================================================================================
 `;
 
+exports[`freeze_exports_call.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+export default not_a_freezing_function(thing);
+
+=====================================output=====================================
+export default Object.freeze(not_a_freezing_function(thing));
+
+================================================================================
+`;
+
+exports[`freeze_exports_fn.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+export default function thing(yo) {
+  return true;
+}
+
+=====================================output=====================================
+export default Object.freeze(function thing(yo) {
+    return true;
+});
+
+================================================================================
+`;
+
+exports[`freeze_exports_ok.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+export default Object.freeze(thing);
+
+=====================================output=====================================
+export default Object.freeze(thing);
+
+================================================================================
+`;
+
+exports[`freeze_exports_stone.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+export default stone(thing);
+
+=====================================output=====================================
+export default stone(thing);
+
+================================================================================
+`;
+
+exports[`freeze_exports_wrap.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+export default thing;
+
+=====================================output=====================================
+export default Object.freeze(thing);
+
+================================================================================
+`;
+
 exports[`method_chaining.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]
@@ -739,7 +813,7 @@ function bar_baz({oneTwo, threeFour}) {
 my_thing(window);
 whoKnew(window.document);
 
-export default face_time;
+export default Object.freeze(face_time);
 
 ================================================================================
 `;
@@ -779,7 +853,7 @@ const x = {
     }
 };
 
-export default (function (main_route, alt_routes = []) {
+export default Object.freeze(function (main_route, alt_routes = []) {
     main_route = get_alt_route_groups(alt_routes);
 });
 

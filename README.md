@@ -1,17 +1,18 @@
 # Prettier for JSLint
 
-This is a modified version of Prettier which aspires to reduce the tedium of
-migrating a javascript project to [JSLint](https://jslint.com/).
+This is a fork of Prettier I made to reduce the tedium of migrating a large
+javascript codebase to [JSLint](https://jslint.com/).
 
-## Handles
-- Hardcoded options (e.g. tabWidth: 4)
+## What's covered
+- Indentation & style (JSLint-friendly options are hardcoded)
 - Ternaries
 - camelCase -> snake_case local variables
 - Arrow functions
 - Naked blocks -> self executing anonymous functions
 - Assignment
+- Frozen exports
 
-## TODO
+## Not covered yet
 - Insert `/*jslint node */` etc
 - Wrap long comments (or move to start of line)
 - Replace `isNaN` with `Number.isNaN` (also `parseInt` etc)
