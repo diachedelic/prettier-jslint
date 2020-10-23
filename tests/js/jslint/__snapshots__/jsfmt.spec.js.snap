@@ -308,6 +308,105 @@ export default Object.freeze(thing);
 ================================================================================
 `;
 
+exports[`inc_dec.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+let a = i++;
+a = i--;
+a = ++i;
+a = --i;
+
+i++;
+++i;
+
+if (true) {
+  i--;
+  --i;
+}
+
+function one() {
+  return --i;
+}
+function two() {
+  return i--;
+}
+function three() {
+  return ++i;
+}
+function found() {
+  return i++;
+}
+
+for (let i = Things.length - 1; i >= 0; i--) {
+  Things[i] += 1;
+  Things[i] -= 1;
+}
+
+stuff (a++);
+
+while(a++) {
+  bar();
+}
+
+=====================================output=====================================
+let a = i;
+i += 1;
+a = i;
+i -= 1;
+i += 1;
+a = i;
+i -= 1;
+a = i;
+
+i += 1;
+i += 1;
+
+if (true) {
+  i -= 1;
+  i -= 1;
+}
+
+function one() {
+    i -= 1;
+    return i;
+}
+function two() {
+    i -= 1;
+    return i + 1;
+}
+function three() {
+    i += 1;
+    return i;
+}
+function found() {
+    i += 1;
+    return i - 1;
+}
+
+for (let i = Things.length - 1; i >= 0; i--) {
+    Things[i] += 1;
+    Things[i] -= 1;
+}
+
+stuff(a++);
+
+while (a) {
+    a += 1;
+    bar();
+}
+
+a += 1;
+while (a) {
+    a += 1;
+    bar();
+}
+
+================================================================================
+`;
+
 exports[`method_chaining.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]
