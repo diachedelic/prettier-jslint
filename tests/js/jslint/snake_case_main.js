@@ -5,6 +5,7 @@ const { qweRty } = faceMan;
 qweRty(faceMan);
 
 let letsGoToTheACTToday;
+let baseURLs;
 let otherID;
 let thingWERD;
 let otherIDHey;

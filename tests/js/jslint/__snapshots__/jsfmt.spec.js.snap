@@ -745,6 +745,7 @@ const { qweRty } = faceMan;
 qweRty(faceMan);
 
 let letsGoToTheACTToday;
+let baseURLs;
 let otherID;
 let thingWERD;
 let otherIDHey;
@@ -797,12 +798,13 @@ const {qweRty} = faceMan;
 qweRty(faceMan);
 
 let lets_go_to_the_ACT_today;
+let base_URLs;
 let other_ID;
 let thing_WERD;
 let other_ID_hey;
 let extra_good;
 let ExtraGood;
-let extra_G;
+let extra_g;
 let extra_g2000;
 let extra2000_strong;
 

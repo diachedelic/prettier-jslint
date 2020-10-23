@@ -155,13 +155,13 @@ function rename(name) {
     // Capitalised names are used to indicate "new".
     return name;
   }
-  const camel_rx = /([A-Z])(?=[A-Z][a-z0-9])|([a-z0-9])(?=[A-Z])/g;
+  const camel_rx = /([A-Z])(?=[A-Z][a-z0-9]{2,})|([a-z0-9])(?=[A-Z])/g;
   const parts = name.replace(camel_rx, "$& ").split(" ");
   return parts.map(function (part) {
     return (
-      /[^A-Z]/.test(part)
-      ? part.toLowerCase()
-      : part // acronym
+      /[A-Z]{2,}/.test(part)
+      ? part // acronym
+      : part.toLowerCase()
     );
   }).join("_");
 }
