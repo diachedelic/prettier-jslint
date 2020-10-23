@@ -1016,20 +1016,9 @@ function printPathNoParens(path, options, print, args) {
         return "{}";
       }
 
-      const is_naked = !(
-          parent.type === "ArrowFunctionExpression" ||
-          parent.type === "FunctionExpression" ||
-          parent.type === "FunctionDeclaration" ||
-          parent.type === "ObjectMethod" ||
-          parent.type === "ClassMethod" ||
-          parent.type === "ClassPrivateMethod" ||
-          parent.type === "ForStatement" ||
-          parent.type === "WhileStatement" ||
-          parent.type === "DoWhileStatement" ||
-          parent.type === "DoExpression" ||
-          (parent.type === "CatchClause" && !parentParent.finalizer) ||
-          parent.type === "TSModuleDeclaration" ||
-          parent.type === "TSDeclareFunction"
+      const is_naked = (
+          parent.type === "Program" ||
+          parent.type === "BlockStatement"
       );
 
       parts.push(is_naked ? "(function () {" : "{");

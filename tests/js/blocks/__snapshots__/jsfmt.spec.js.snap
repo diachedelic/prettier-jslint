@@ -10,10 +10,50 @@ printWidth: 80
     console.log(1);
 }
 
+if (!this.route) {
+    return null;
+}
+
+function stuff() {
+  function thing() {
+    while (true) {
+      hi();
+    }
+
+    {
+        hi();
+    }
+  }
+
+  {
+      hi();
+  }
+}
+
 =====================================output=====================================
 (function () {
     console.log(1);
 }());
+
+if (!this.route) {
+    return null;
+}
+
+function stuff() {
+    function thing() {
+        while (true) {
+            hi();
+        }
+
+        (function () {
+            hi();
+        }());
+    }
+
+    (function () {
+        hi();
+    }());
+}
 
 ================================================================================
 `;
