@@ -52,7 +52,7 @@ const espreeDisabledTests = new Set(
   [
     // These tests only work for `babel`
     "comments-closure-typecast",
-    "snake_case"
+    "jslint"
   ].map((directory) => path.join(__dirname, "../tests/js", directory))
 );
 

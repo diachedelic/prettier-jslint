@@ -1,8 +1,362 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`binary.js format 1`] = `
+exports[`arrow_call.js format 1`] = `
 ====================================options=====================================
-parsers: ["babel", "flow", "typescript"]
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const testResults = results.testResults.map(testResult =>
+  formatResult(testResult, formatter, reporter)
+);
+
+it('mocks regexp instances', () => {
+  expect(
+    () => moduleMocker.generateFromMetadata(moduleMocker.getMetadata(/a/)),
+  ).not.toThrow();
+});
+
+expect(() => asyncRequest({ url: "/test-endpoint" }))
+  .toThrowError(/Required parameter/);
+
+expect(() => asyncRequest({ url: "/test-endpoint-but-with-a-long-url" }))
+  .toThrowError(/Required parameter/);
+
+expect(() => asyncRequest({ url: "/test-endpoint-but-with-a-suuuuuuuuper-long-url" }))
+  .toThrowError(/Required parameter/);
+
+expect(() => asyncRequest({ type: "foo", url: "/test-endpoint" }))
+  .not.toThrowError();
+
+expect(() => asyncRequest({ type: "foo", url: "/test-endpoint-but-with-a-long-url" }))
+  .not.toThrowError();
+
+const a = Observable
+  .fromPromise(axiosInstance.post('/carts/mine'))
+  .map((response) => response.data)
+
+const b = Observable.fromPromise(axiosInstance.get(url))
+  .map((response) => response.data)
+
+// func(
+//   veryLoooooooooooooooooooooooongName,
+//   veryLooooooooooooooooooooooooongName =>
+//     veryLoooooooooooooooongName.something()
+// );
+
+promise.then(result => result.veryLongVariable.veryLongPropertyName > someOtherVariable ? "ok" : "fail");
+
+=====================================output=====================================
+const test_results = results.testResults.map((test_result) => formatResult(
+    test_result,
+    formatter,
+    reporter
+));
+
+it("mocks regexp instances", () => {
+    expect(() => moduleMocker.generateFromMetadata(
+        moduleMocker.getMetadata(/a/)
+    )).not.toThrow();
+});
+
+expect(() => asyncRequest({url: "/test-endpoint"})).toThrowError(
+    /Required parameter/
+);
+
+expect(() => asyncRequest({
+    url: "/test-endpoint-but-with-a-long-url"
+})).toThrowError(/Required parameter/);
+
+expect(() => asyncRequest({
+    url: "/test-endpoint-but-with-a-suuuuuuuuper-long-url"
+})).toThrowError(/Required parameter/);
+
+expect(() => asyncRequest({
+    type: "foo",
+    url: "/test-endpoint"
+})).not.toThrowError();
+
+expect(() => asyncRequest({
+    type: "foo",
+    url: "/test-endpoint-but-with-a-long-url"
+})).not.toThrowError();
+
+const a = Observable.fromPromise(axiosInstance.post("/carts/mine")).map(
+    (response) => response.data
+);
+
+const b = Observable.fromPromise(axiosInstance.get(url)).map(
+    (response) => response.data
+);
+
+// func(
+//   veryLoooooooooooooooooooooooongName,
+//   veryLooooooooooooooooooooooooongName =>
+//     veryLoooooooooooooooongName.something()
+// );
+
+promise.then((result) => (
+    result.veryLongVariable.veryLongPropertyName > someOtherVariable
+    ? "ok"
+    : "fail"
+));
+
+================================================================================
+`;
+
+exports[`naked_block.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+{
+    console.log(1);
+}
+
+if (!this.route) {
+    return null;
+}
+
+function stuff() {
+  function thing() {
+    while (true) {
+      hi();
+    }
+
+    {
+        hi();
+    }
+  }
+
+  {
+      hi();
+  }
+}
+
+=====================================output=====================================
+(function () {
+    console.log(1);
+}());
+
+if (!this.route) {
+    return null;
+}
+
+function stuff() {
+    function thing() {
+        while (true) {
+            hi();
+        }
+
+        (function () {
+            hi();
+        }());
+    }
+
+    (function () {
+        hi();
+    }());
+}
+
+================================================================================
+`;
+
+exports[`snake_case_main.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+import helloYou from "./blah.js";
+import MyClass from "./blah.js";
+import { faceMan, ThingDog } from "./woo.js";
+const { qweRty } = faceMan;
+qweRty(faceMan);
+
+let letsGoToTheACTToday;
+let otherID;
+let thingWERD;
+let otherIDHey;
+let extra_good;
+let ExtraGood;
+let extraG;
+let extraG2000;
+let extra2000Strong;
+
+var myThing = otherID;
+var otherOtherID = myThing;
+const wordLine = BookPage;
+const faceTime = letsGoToTheACTToday;
+fooBar({oneTwo});
+whosThat.overThere.doingThat("stopIt");
+const fooBar = oneTwo + threeFour;
+const fooBarGa = oneTwoGa || threeFourGa;
+const {catDog, wolfRat} = skyGround;
+helloYou.helloYou.helloYou = wordLine.thingStuff.myThing();
+hhhhelloYou.helloYou.helloYou = wwwwordLine.thingStuff.myThing();
+helloYou = thingStuff;
+someGlobal = helloYou;
+
+let gloopDoop = (
+  scoopNoop
+  ? faceIt
+  : fooBar
+);
+
+function barBaz({oneTwo, threeFour}) {
+  const faceIt = {
+    thisIsHard: "soHard",
+    itsTrue
+  };
+  let myThang = catDog();
+  const { whoKnew } = helloYou;
+  return booYah;
+}
+
+myThing(window);
+whoKnew(window.document);
+
+export default faceTime;
+
+=====================================output=====================================
+import hello_you from "./blah.js";
+import MyClass from "./blah.js";
+import {faceMan, ThingDog} from "./woo.js";
+const {qweRty} = faceMan;
+qweRty(faceMan);
+
+let lets_go_to_the_ACT_today;
+let other_ID;
+let thing_WERD;
+let other_ID_hey;
+let extra_good;
+let ExtraGood;
+let extra_G;
+let extra_g2000;
+let extra2000_strong;
+
+var my_thing = other_ID;
+var other_other_ID = my_thing;
+const word_line = BookPage;
+const face_time = lets_go_to_the_ACT_today;
+fooBar({oneTwo});
+whosThat.overThere.doingThat("stopIt");
+const foo_bar = oneTwo + threeFour;
+const foo_bar_ga = oneTwoGa || threeFourGa;
+const {catDog, wolfRat} = skyGround;
+hello_you.helloYou.helloYou = word_line.thingStuff.myThing();
+hhhhelloYou.helloYou.helloYou = wwwwordLine.thingStuff.myThing();
+hello_you = thingStuff;
+someGlobal = hello_you;
+
+let gloop_doop = (
+    scoopNoop
+    ? faceIt
+    : foo_bar
+);
+
+function bar_baz({oneTwo, threeFour}) {
+    const face_it = {
+        thisIsHard: "soHard",
+        itsTrue
+    };
+    let my_thang = catDog();
+    const {whoKnew} = hello_you;
+    return booYah;
+}
+
+my_thing(window);
+whoKnew(window.document);
+
+export default face_time;
+
+================================================================================
+`;
+
+exports[`snake_case_nested_functions.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+function getAltRouteGroups(altRoutes) {
+    thingStuff[altRoutes] = true;
+    thingStuff.altRoutes = [altRoutes];
+    return true;
+}
+
+const x = {
+  thingStuff(myDog) {
+    myDog = 2;
+  }
+};
+
+export default (mainRoute, altRoutes = []) => {
+    mainRoute = getAltRouteGroups(altRoutes);
+};
+
+=====================================output=====================================
+function get_alt_route_groups(alt_routes) {
+    thingStuff[alt_routes] = true;
+    thingStuff.altRoutes = [alt_routes];
+    return true;
+}
+
+const x = {
+    thingStuff(my_dog) {
+        my_dog = 2;
+    }
+};
+
+export default (main_route, alt_routes = []) => {
+    main_route = get_alt_route_groups(alt_routes);
+};
+
+================================================================================
+`;
+
+exports[`snake_case_object_literals.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+import helloYou from "./blah.js";
+import MyClass from "./blah.js";
+
+let theExport = {
+  helloYou,
+  someGlobal,
+  someGlobal: helloYou,
+  helloYou: someGlobal,
+  helloYou: {helloYou},
+  MyClass,
+};
+
+export default Object.freeze(theExport);
+
+=====================================output=====================================
+import hello_you from "./blah.js";
+import MyClass from "./blah.js";
+
+let the_export = {
+    helloYou: hello_you,
+    someGlobal,
+    someGlobal: hello_you,
+    helloYou: someGlobal,
+    helloYou: {helloYou: hello_you},
+    MyClass
+};
+
+export default Object.freeze(the_export);
+
+================================================================================
+`;
+
+exports[`ternary_binary.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
@@ -25,9 +379,9 @@ room = room.map((row, row_index) => row.map((col, col_index) => (
 ================================================================================
 `;
 
-exports[`func-call.js format 1`] = `
+exports[`ternary_func_call.js format 1`] = `
 ====================================options=====================================
-parsers: ["babel", "flow", "typescript"]
+parsers: ["babel"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
@@ -81,9 +435,9 @@ fn(
 ================================================================================
 `;
 
-exports[`indent.js format 1`] = `
+exports[`ternary_indent.js format 1`] = `
 ====================================options=====================================
-parsers: ["babel", "flow", "typescript"]
+parsers: ["babel"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
@@ -458,9 +812,9 @@ a
 ================================================================================
 `;
 
-exports[`nested.js format 1`] = `
+exports[`ternary_nested.js format 1`] = `
 ====================================options=====================================
-parsers: ["babel", "flow", "typescript"]
+parsers: ["babel"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
@@ -556,9 +910,9 @@ const payment_message2 = (
 ================================================================================
 `;
 
-exports[`parenthesis.js format 1`] = `
+exports[`ternary_parenthesis.js format 1`] = `
 ====================================options=====================================
-parsers: ["babel", "flow", "typescript"]
+parsers: ["babel"]
 printWidth: 80
                                                                                 | printWidth
 =====================================input======================================
