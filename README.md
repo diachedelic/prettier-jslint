@@ -14,19 +14,14 @@ javascript codebase to [JSLint](https://jslint.com/).
 - typeof x === "undefined" => x === undefined
 - isNaN => Number.isNaN etc
 - switch statements
+- Replace spaces in regexp with \s
 
 ## TODO
 - Insert `/*jslint node */` etc
 - Wrap long comments (or move to start of line)
 - Object literals (each property on separate line if multiple or :)
 - Linebreaks between multiple function parameters & destructured objects
-
-#### Replace spaces in regexps with `\s`, and escape hyphens`[-]`
-```
-/[^0-9a-zA-Z-] foo/
-// becomes
-/[^\-0-9a-zA-Z]\sfoo/
-```
+- Escape hyphens in regexps character classes
 
 ---
 

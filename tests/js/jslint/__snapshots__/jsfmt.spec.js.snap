@@ -60,19 +60,19 @@ it("mocks regexp instances", function () {
 });
 
 expect(() => asyncRequest({url: "/test-endpoint"})).toThrowError(
-    /Required parameter/
+    /Required\\sparameter/
 );
 
 expect(() => asyncRequest({
     url: "/test-endpoint-but-with-a-long-url"
 })).toThrowError(
-    /Required parameter/
+    /Required\\sparameter/
 );
 
 expect(() => asyncRequest({
     url: "/test-endpoint-but-with-a-suuuuuuuuper-long-url"
 })).toThrowError(
-    /Required parameter/
+    /Required\\sparameter/
 );
 
 expect(() => asyncRequest({
@@ -728,6 +728,22 @@ Number.parseFloat(5);
 other(2);
 thing.map(Number.isNaN);
 thing.map(Number.parseInt);
+
+================================================================================
+`;
+
+exports[`regex.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+const a = /^((\\d+)m )?((\\d+) (\\.\\d+)?)s$/;
+b(/[^0-9a-zA-Z-] foo /);
+
+=====================================output=====================================
+const a = /^((\\d+)m\\s)?((\\d+)\\s(\\.\\d+)?)s$/;
+b(/[^0-9a-zA-Z-]\\sfoo\\s/);
 
 ================================================================================
 `;
