@@ -3,19 +3,20 @@
 This is a modified version of Prettier which aspires to reduce the tedium of
 migrating a javascript project to [JSLint](https://jslint.com/).
 
-## Implemented so far
+## Handles
 - Hardcoded options (e.g. tabWidth: 4)
 - Ternaries
 - camelCase -> snake_case local variables
 - Arrow functions
 - Naked blocks -> self executing anonymous functions
-- No newline before right side of assignment
+- Assignment
 
-## Still to do
+## TODO
 - Insert `/*jslint node */` etc
 - Wrap long comments (or move to start of line)
 - Replace `isNaN` with `Number.isNaN` (also `parseInt` etc)
 - Method chaining
+- Vue components
 
 #### Replace spaces in regexps with `\s`, and escape hyphens`[-]`
 ```
