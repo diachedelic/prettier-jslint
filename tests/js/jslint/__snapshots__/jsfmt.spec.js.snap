@@ -706,6 +706,32 @@ function stuff() {
 ================================================================================
 `;
 
+exports[`number_globals.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+Number.isNaN(5);
+isNaN(5);
+parseInt(4);
+parseFloat(5);
+other(2);
+thing.map(isNaN);
+thing.map(Number.parseInt);
+
+=====================================output=====================================
+Number.isNaN(5);
+Number.isNaN(5);
+Number.parseInt(4);
+Number.parseFloat(5);
+other(2);
+thing.map(Number.isNaN);
+thing.map(Number.parseInt);
+
+================================================================================
+`;
+
 exports[`snake_case_main.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]

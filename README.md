@@ -12,6 +12,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Assignment
 - Frozen exports
 - typeof x === "undefined" => x === undefined
+- isNaN => Number.isNaN etc
 
 ## Not covered yet
 - Insert `/*jslint node */` etc

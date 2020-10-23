@@ -181,10 +181,14 @@ function isPropertyName(path) {
   }
 }
 
+function isDeclared(name, path) {
+  return getScopes(path).some(scope => scope.declared.includes(name));
+}
+
 function evaluateName(name, path) {
   return (
     (
-      getScopes(path).some(scope => scope.declared.includes(name)) &&
+      isDeclared(name, path) &&
       !isPropertyName(path)
     )
     ? rename(name)
@@ -195,13 +199,22 @@ function evaluateName(name, path) {
 function printIdentifier(path) {
   const node = path.getValue();
   const parent = path.getParentNode();
+  const number_methods = ["isNaN", "parseInt", "parseFloat"];
   return (
     (
-      parent.type === "ObjectProperty" &&
-      parent.key === node
+      number_methods.includes(node.name) &&
+      parent.type !== "MemberExpression" &&
+      !isDeclared(node.name, path)
     )
-    ? node.name
-    : evaluateName(node.name, path)
+    ? "Number." + node.name
+    : (
+      (
+        parent.type === "ObjectProperty" &&
+        parent.key === node
+      )
+      ? node.name
+      : evaluateName(node.name, path)
+    )
   );
 }
 
