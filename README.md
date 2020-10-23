@@ -15,7 +15,7 @@ migrating a javascript project to [JSLint](https://jslint.com/).
 - Insert `/*jslint node */` etc
 - Wrap long comments (or move to start of line)
 - Replace `isNaN` with `Number.isNaN` (also `parseInt` etc)
-- Method chaining
+- Object literals (each property on separate line if multiple or :)
 
 #### Replace spaces in regexps with `\s`, and escape hyphens`[-]`
 ```

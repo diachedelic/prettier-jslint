@@ -66,6 +66,51 @@ function printMemberChain(path, options, print) {
   //   [Identifier, CallExpression, MemberExpression, CallExpression]
   const printedNodes = [];
 
+  const calls = (function harvest_calls(node, found) {
+    if (
+      node.type === "CallExpression" &&
+      node.callee.type === "MemberExpression" &&
+      node.callee.property.leadingComments
+    ) {
+      const member = node.callee;
+      const has_args = node.arguments.length > 0;
+      const comments = Array.from(
+        member.property.leadingComments
+      ).map(function (comment) {
+        // does not like putting regular comments in empty calls
+        comment.type = has_args ? comment.type : "CommentBlock";
+        comment.leading = has_args ? true : false;
+        comment.trailing = false;
+        // pad end
+        comment.value = comment.value.replace(/\s*$/, " ");
+        return comment;
+      });
+      if (has_args) {
+        node.arguments[0].comments = comments;
+        node.arguments[0].leadingComments = comments;
+      } else {
+        node.comments = (
+          node.comments
+          ? node.comments.concat(comments)
+          : comments
+        );
+    }
+      delete member.comments;
+      delete member.property.leadingComments;
+      delete member.object.trailingComments;
+    }
+
+    return (
+      node.type === "CallExpression"
+      ? harvest_calls(node.callee, found.concat(node))
+      : (
+        node.type === "MemberExpression"
+        ? harvest_calls(node.object, found)
+        : found
+      )
+    )
+  }(path.getValue(), []));
+
   // Here we try to retain one typed empty line after each call expression or
   // the first group whether it is in parentheses or not
   function shouldInsertEmptyLineAfter(node) {
@@ -89,6 +134,20 @@ function printMemberChain(path, options, print) {
     return isNextLineEmpty(originalText, node, options.locEnd);
   }
 
+  const breakCallArguments = (
+    (
+      calls.some(function (node) {
+        return node.arguments.some(function (arg) {
+          return arg.type === "ArrowFunctionExpression";
+        });
+      }) &&
+      calls.length > 1
+    ) || (
+      calls.length > 2 &&
+      calls.some(call => call.arguments.length > 0)
+    )
+  );
+
   function rec(path) {
     const node = path.getValue();
     if (
@@ -104,7 +163,7 @@ function printMemberChain(path, options, print) {
               concat([
                 printOptionalToken(path),
                 printFunctionTypeParameters(path, options, print),
-                printCallArguments(path, options, print),
+                printCallArguments(path, options, print, breakCallArguments),
               ]),
             options
           ),
@@ -149,7 +208,12 @@ function printMemberChain(path, options, print) {
     printed: concat([
       printOptionalToken(path),
       printFunctionTypeParameters(path, options, print),
-      printCallArguments(path, options, print),
+      printCallArguments(
+        path,
+        options,
+        print,
+        node.arguments.length > 0 && breakCallArguments
+      ),
     ]),
   });
 
@@ -211,6 +275,7 @@ function printMemberChain(path, options, print) {
     }
   }
   groups.push(currentGroup);
+
   currentGroup = [];
 
   // Then, each following group is a sequence of MemberExpression followed by
@@ -322,16 +387,6 @@ function printMemberChain(path, options, print) {
     return concat(printed);
   }
 
-  function printIndentedGroup(groups) {
-    /* istanbul ignore next */
-    if (groups.length === 0) {
-      return "";
-    }
-    return indent(
-      group(concat([hardline, join(hardline, groups.map(printGroup))]))
-    );
-  }
-
   const printedGroups = groups.map(printGroup);
   const oneLine = concat(printedGroups);
 
@@ -359,12 +414,9 @@ function printMemberChain(path, options, print) {
     !isCallOrOptionalCallExpression(lastNodeBeforeIndent) &&
     shouldInsertEmptyLineAfter(lastNodeBeforeIndent);
 
-  const expanded = concat([
-    printGroup(groups[0]),
-    shouldMerge ? concat(groups.slice(1, 2).map(printGroup)) : "",
-    shouldHaveEmptyLineBeforeIndent ? hardline : "",
-    printIndentedGroup(groups.slice(shouldMerge ? 2 : 1)),
-  ]);
+  const expanded = concat(
+    groups.map(printGroup)
+  );
 
   const callExpressions = printedNodes
     .map(({ node }) => node)

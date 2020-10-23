@@ -30,7 +30,7 @@ const {
   utils: { willBreak },
 } = require("../../document");
 
-function printCallArguments(path, options, print) {
+function printCallArguments(path, options, print, forceBreak) {
   const node = path.getValue();
   const isDynamicImport = node.type === "ImportExpression";
   const args = isDynamicImport ? [node.source] : node.arguments;
@@ -38,25 +38,10 @@ function printCallArguments(path, options, print) {
   if (args.length === 0) {
     return concat([
       "(",
-      comments.printDanglingComments(path, options, /* sameIndent */ true),
-      ")",
-    ]);
-  }
-
-  // useEffect(() => { ... }, [foo, bar, baz])
-  if (
-    args.length === 2 &&
-    args[0].type === "ArrowFunctionExpression" &&
-    args[0].params.length === 0 &&
-    args[0].body.type === "BlockStatement" &&
-    args[1].type === "ArrayExpression" &&
-    !args.some((arg) => arg.comments)
-  ) {
-    return concat([
-      "(",
-      path.call(print, "arguments", 0),
-      ", ",
-      path.call(print, "arguments", 1),
+      comments.printDanglingComments(path, {
+        ...options,
+        shouldBreak: options.shouldBreak || forceBreak,
+      }, /* sameIndent */ true),
       ")",
     ]);
   }
@@ -148,8 +133,8 @@ function printCallArguments(path, options, print) {
     return allArgsBrokenOut();
   }
 
-  const shouldGroupFirst = shouldGroupFirstArg(args);
-  const shouldGroupLast = shouldGroupLastArg(args);
+  const shouldGroupFirst = shouldGroupFirstArg(args, forceBreak);
+  const shouldGroupLast = shouldGroupLastArg(args, forceBreak);
   if (shouldGroupFirst || shouldGroupLast) {
     const shouldBreak =
       (shouldGroupFirst
@@ -223,9 +208,12 @@ function printCallArguments(path, options, print) {
 
   const contents = concat([
     "(",
-    indent(concat([softline, concat(printedArguments)])),
+    indent(concat([
+      forceBreak ? hardline : softline,
+      concat(printedArguments)
+    ])),
     ifBreak(maybeTrailingComma),
-    softline,
+    forceBreak ? hardline : softline,
     ")",
   ]);
   if (isLongCurriedCallExpression(path)) {
@@ -239,7 +227,7 @@ function printCallArguments(path, options, print) {
   });
 }
 
-function couldGroupArg(arg) {
+function couldGroupArg(arg, forceBreak) {
   return (
     (arg.type === "ObjectExpression" &&
       (arg.properties.length > 0 || arg.comments)) ||
@@ -249,6 +237,7 @@ function couldGroupArg(arg) {
     (arg.type === "TSAsExpression" && couldGroupArg(arg.expression)) ||
     arg.type === "FunctionExpression" ||
     (arg.type === "ArrowFunctionExpression" &&
+      !forceBreak &&
       // we want to avoid breaking inside composite return types but not simple keywords
       // https://github.com/prettier/prettier/issues/4070
       // export class Thing implements OtherThing {
@@ -274,20 +263,20 @@ function couldGroupArg(arg) {
   );
 }
 
-function shouldGroupLastArg(args) {
+function shouldGroupLastArg(args, forceBreak) {
   const lastArg = getLast(args);
   const penultimateArg = getPenultimate(args);
   return (
     !hasLeadingComment(lastArg) &&
     !hasTrailingComment(lastArg) &&
-    couldGroupArg(lastArg) &&
+    couldGroupArg(lastArg, forceBreak) &&
     // If the last two arguments are of the same type,
     // disable last element expansion.
     (!penultimateArg || penultimateArg.type !== lastArg.type)
   );
 }
 
-function shouldGroupFirstArg(args) {
+function shouldGroupFirstArg(args, forceBreak) {
   if (args.length !== 2) {
     return false;
   }
@@ -301,7 +290,7 @@ function shouldGroupFirstArg(args) {
     secondArg.type !== "FunctionExpression" &&
     secondArg.type !== "ArrowFunctionExpression" &&
     secondArg.type !== "ConditionalExpression" &&
-    !couldGroupArg(secondArg)
+    !couldGroupArg(secondArg, forceBreak)
   );
 }
 

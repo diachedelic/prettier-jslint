@@ -65,11 +65,15 @@ expect(() => asyncRequest({url: "/test-endpoint"})).toThrowError(
 
 expect(() => asyncRequest({
     url: "/test-endpoint-but-with-a-long-url"
-})).toThrowError(/Required parameter/);
+})).toThrowError(
+    /Required parameter/
+);
 
 expect(() => asyncRequest({
     url: "/test-endpoint-but-with-a-suuuuuuuuper-long-url"
-})).toThrowError(/Required parameter/);
+})).toThrowError(
+    /Required parameter/
+);
 
 expect(() => asyncRequest({
     type: "foo",
@@ -81,11 +85,15 @@ expect(() => asyncRequest({
     url: "/test-endpoint-but-with-a-long-url"
 })).not.toThrowError();
 
-const a = Observable.fromPromise(axiosInstance.post("/carts/mine")).map(
+const a = Observable.fromPromise(
+    axiosInstance.post("/carts/mine")
+).map(
     (response) => response.data
 );
 
-const b = Observable.fromPromise(axiosInstance.get(url)).map(
+const b = Observable.fromPromise(
+    axiosInstance.get(url)
+).map(
     (response) => response.data
 );
 
@@ -222,6 +230,346 @@ function abc() {
         }
     }
 }
+
+================================================================================
+`;
+
+exports[`method_chaining.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+object.foo().bar.boo.baz();
+
+foo((stuff) => true);
+bar.foo((stuff) => true);
+
+domain
+    .concept("Page")
+    .val("title", "string")
+    .vals("widgets", "Widget")
+    .val("title", "string")
+    .val("color", "Color")
+    .val("foo", "Foo")
+    .val("bar", "Bar");
+
+domain
+    .val(() => true)
+    .concept("Page");
+
+foo()
+  .bar()
+  .baz()
+  .baz()
+  .baz()
+  .baz();
+
+foo()
+  .bar()
+  .baz()
+  .baz()
+  .baz("Hi")
+  .baz();
+
+foo().bar.baz();
+
+Something
+  // I got a thing
+  .getInstance(this.props.dao)
+  // You got a thing
+  .getters()
+
+// Warm-up first
+measure()
+  .then(() => {
+    SomethingLong();
+  });
+
+measure() // Warm-up first
+  .then(() => {
+    SomethingLong();
+  });
+
+angular.module('AngularAppModule')
+  // Hello, I am comment.
+  .constant('API_URL', 'http://localhost:8080/api');
+
+client.execute(
+Post.selectAll()
+  .where(Post.id.eq(42))
+  .where(Post.published.eq(true))
+);
+
+[].forEach(key => {
+  data('foo')
+    [key]('bar')
+    .then(() => console.log('bar'))
+    .catch(() => console.log('baz'));
+});
+
+cy.get('option:first')
+  .should('be.selected')
+  .and('have.value', 'Metallica')
+
+domain
+    .concept('Page')
+    .val('title', 'string')
+    .vals('widgets', 'Widget')
+    .val('title', 'string')
+    .val('color', 'Color')
+    .val('foo', 'Foo')
+    .val('bar', 'Bar');
+
+const palindrome = str => {
+  const s = str.toLowerCase().replace(/[\\W_]/g, '');
+  return s === s.split('').reverse().join('');
+};
+
+action$.ofType(ActionTypes.SEARCHED_USERS)
+  .map(action => action.payload.query)
+  .filter(q => !!q)
+  .switchMap(q =>
+    Observable.timer(800) // debounce
+      .takeUntil(action$.ofType(ActionTypes.CLEARED_SEARCH_RESULTS))
+      .mergeMap(() =>
+        Observable.merge(
+          Observable.of(replace(\`?q=\${q}\`)),
+          ajax
+            .getJSON(\`https://api.github.com/search/users?q=\${q}\`)
+            .map(res => res.items)
+            .map(receiveUsers)
+        )
+      )
+  );
+
+wrapper.find('SomewhatLongNodeName').prop('longPropFunctionName', 'second argument that pushes this group past 80 characters')('argument').then(function() {
+  doSomething();
+});
+
+of("test")
+  .concept('Page')
+  .val('title', 'string')
+  .vals('widgets', 'Widget')
+  .subscribe({
+    foo() {
+      bar();
+    }
+  })
+  .val('title', 'string')
+  .val('color', 'Color')
+  .pipe(throwIfEmpty())
+  .subscribe({
+    get foo() {
+      bar();
+    }
+  });
+
+const sel = this.connections
+  .concat(this.activities.concat(this.operators))
+  .filter(x => x.selected);
+
+=====================================output=====================================
+object.foo().bar.boo.baz();
+
+foo((stuff) => true);
+bar.foo((stuff) => true);
+
+domain.concept(
+    "Page"
+).val(
+    "title",
+    "string"
+).vals(
+    "widgets",
+    "Widget"
+).val(
+    "title",
+    "string"
+).val(
+    "color",
+    "Color"
+).val(
+    "foo",
+    "Foo"
+).val(
+    "bar",
+    "Bar"
+);
+
+domain.val(
+    () => true
+).concept(
+    "Page"
+);
+
+foo().bar().baz().baz().baz().baz();
+
+foo().bar(
+).baz(
+).baz(
+).baz(
+    "Hi"
+).baz();
+
+foo().bar.baz();
+
+Something.getInstance(
+    // I got a thing
+    this.props.dao
+).getters(/* You got a thing */);
+
+// Warm-up first
+measure().then(function () {
+    SomethingLong();
+});
+
+// Warm-up first
+measure().then(
+    // Warm-up first
+    function () {
+        SomethingLong();
+    }
+);
+
+angular.module("AngularAppModule").constant(
+    // Hello, I am comment.
+    "API_URL",
+    "http://localhost:8080/api"
+);
+
+client.execute(
+    Post.selectAll(
+    ).where(
+        Post.id.eq(42)
+    ).where(
+        Post.published.eq(true)
+    )
+);
+
+[].forEach(function (key) {
+    data("foo")[key](
+        "bar"
+    ).then(
+        () => console.log("bar")
+    ).catch(
+        () => console.log("baz")
+    );
+});
+
+cy.get(
+    "option:first"
+).should(
+    "be.selected"
+).and(
+    "have.value",
+    "Metallica"
+);
+
+domain.concept(
+    "Page"
+).val(
+    "title",
+    "string"
+).vals(
+    "widgets",
+    "Widget"
+).val(
+    "title",
+    "string"
+).val(
+    "color",
+    "Color"
+).val(
+    "foo",
+    "Foo"
+).val(
+    "bar",
+    "Bar"
+);
+
+function palindrome(str) {
+    const s = str.toLowerCase().replace(/[\\W_]/g, "");
+    return (
+        s ===
+        s.split(
+            ""
+        ).reverse(
+        ).join(
+            ""
+        )
+    );
+}
+
+action$.ofType(
+    ActionTypes.SEARCHED_USERS
+).map(
+    (action) => action.payload.query
+).filter(
+    (q) => !!q
+).switchMap(
+    (q) => Observable.timer// debounce
+    (
+        800
+    ).takeUntil(
+        // debounce
+        action$.ofType(ActionTypes.CLEARED_SEARCH_RESULTS)
+    ).mergeMap(
+        () => Observable.merge(
+            Observable.of(replace(\`?q=\${q}\`)),
+            ajax.getJSON(
+                \`https://api.github.com/search/users?q=\${q}\`
+            ).map(
+                (res) => res.items
+            ).map(
+                receiveUsers
+            )
+        )
+    )
+);
+
+wrapper.find(
+    "SomewhatLongNodeName"
+).prop(
+    "longPropFunctionName",
+    "second argument that pushes this group past 80 characters"
+)(
+    "argument"
+).then(function () {
+    doSomething();
+});
+
+of("test").concept(
+    "Page"
+).val(
+    "title",
+    "string"
+).vals(
+    "widgets",
+    "Widget"
+).subscribe({
+    foo() {
+        bar();
+    }
+}).val(
+    "title",
+    "string"
+).val(
+    "color",
+    "Color"
+).pipe(
+    throwIfEmpty()
+).subscribe({
+    get foo() {
+        bar();
+    }
+});
+
+const sel = this.connections.concat(
+    this.activities.concat(this.operators)
+).filter(
+    (x) => x.selected
+);
 
 ================================================================================
 `;

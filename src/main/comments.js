@@ -454,7 +454,7 @@ function printDanglingComments(path, options, sameIndent, filter) {
   const node = path.getValue();
 
   if (!node || !node.comments) {
-    return "";
+    return options.shouldBreak ? hardline : "";
   }
 
   path.each((commentPath) => {
