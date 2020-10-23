@@ -2,6 +2,7 @@ dist/
 .cache/
 coverage/
 /tests/**/*.*
+!/tests/js/jslint/*.js
 !/tests/**/jsfmt.spec.js
 /tests_integration/cli/
 /tests_integration/plugins/
