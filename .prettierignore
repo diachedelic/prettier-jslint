@@ -1,6 +1,7 @@
 dist/
 .cache/
 coverage/
+src/
 /tests/**/*.*
 !/tests/js/jslint/*.js
 !/tests/**/jsfmt.spec.js
