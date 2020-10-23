@@ -250,6 +250,81 @@ function usesThis(node) {
   })
 }
 
+function fixUpdateExpressions(body) {
+  body.reduce(function (additions, statement, statement_nr) {
+    let update_expr;
+    let insert_after;
+    if (
+      statement.type === "VariableDeclaration" &&
+      statement.declarations.length === 1 &&
+      statement.declarations[0].id.type === "Identifier" &&
+      statement.declarations[0].init &&
+      statement.declarations[0].init.type === "UpdateExpression"
+    ) {
+      update_expr = statement.declarations[0].init;
+      statement.declarations[0].init = update_expr.argument;
+      insert_after = !update_expr.prefix;
+    }
+    if (
+      statement.type === "ExpressionStatement" &&
+      statement.expression.type === "AssignmentExpression" &&
+      statement.expression.right.type === "UpdateExpression"
+    ) {
+      update_expr = statement.expression.right;
+      statement.expression.right = update_expr.argument;
+      insert_after = !update_expr.prefix;
+    }
+    if (
+      statement.type === "ReturnStatement" &&
+      statement.argument &&
+      statement.argument.type === "UpdateExpression"
+    ) {
+      update_expr = statement.argument;
+      statement.argument = (
+        update_expr.prefix
+        ? update_expr.argument
+        : {
+          type: "BinaryExpression",
+          operator: (
+            update_expr.operator === "++"
+            ? "-"
+            : "+"
+          ),
+          left: update_expr.argument,
+          right: {
+            type: "NumericLiteral",
+            extra: { raw: "1" }
+          }
+        }
+      );
+      insert_after = false;
+    }
+    if (update_expr) {
+      additions.push({
+        insert_after,
+        relative_to: statement,
+        statement: {
+          type: "ExpressionStatement",
+          expression: update_expr
+        }
+      });
+    }
+
+    return additions;
+  }, []).forEach(function ({ insert_after, relative_to, statement }) {
+    const relative_nr = body.indexOf(relative_to);
+    body.splice(
+      (
+        insert_after
+        ? relative_nr + 1
+        : relative_nr
+      ),
+      0,
+      statement
+    );
+  });
+}
+
 function genericPrint(path, options, printPath, args) {
   const node = path.getValue();
   let needsParens = false;
@@ -369,6 +444,11 @@ function printDecorators(path, options, print) {
 
 function printPathNoParens(path, options, print, args) {
   const n = path.getValue();
+
+  if (n && Array.isArray(n.body)) {
+    fixUpdateExpressions(n.body);
+  }
+
   const semi = options.semi ? ";" : "";
 
   if (!n) {
@@ -1652,10 +1732,23 @@ function printPathNoParens(path, options, print, args) {
 
       return concat(parts);
     case "UpdateExpression":
-      parts.push(path.call(print, "argument"), n.operator);
+      if (
+        path.getParentNode().type === "ExpressionStatement"
+      ) {
+        parts.push(
+          path.call(print, "argument"),
+          " ",
+          n.operator[0],
+          "=",
+          " ",
+          "1"
+        );
+      } else {
+        parts.push(path.call(print, "argument"), n.operator);
 
-      if (n.prefix) {
-        parts.reverse();
+        if (n.prefix) {
+          parts.reverse();
+        }
       }
 
       return concat(parts);

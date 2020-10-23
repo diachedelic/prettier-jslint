@@ -27,6 +27,9 @@ function found() {
 for (let i = Things.length - 1; i >= 0; i--) {
   Things[i] += 1;
   Things[i] -= 1;
+
+  b++;
+  c = --d;
 }
 
 stuff (a++);

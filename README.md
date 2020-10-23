@@ -15,6 +15,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - isNaN => Number.isNaN etc
 - switch statements
 - Replace spaces in regexp with \s
+- Replaces ++/-- with +=/-= where possible
 
 ## TODO
 - Insert `/*jslint node */` etc
