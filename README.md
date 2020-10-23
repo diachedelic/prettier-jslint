@@ -3,7 +3,7 @@
 This is a fork of Prettier I made to reduce the tedium of migrating a large
 javascript codebase to [JSLint](https://jslint.com/).
 
-## What's covered
+## What's changed from upstream
 - Indentation & style (JSLint-friendly options are hardcoded)
 - Ternaries
 - camelCase -> snake_case local variables
@@ -13,12 +13,13 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Frozen exports
 - typeof x === "undefined" => x === undefined
 - isNaN => Number.isNaN etc
+- switch statements
 
-## Not covered yet
+## TODO
 - Insert `/*jslint node */` etc
 - Wrap long comments (or move to start of line)
-- Replace `isNaN` with `Number.isNaN` (also `parseInt` etc)
 - Object literals (each property on separate line if multiple or :)
+- Linebreaks between multiple function parameters & destructured objects
 
 #### Replace spaces in regexps with `\s`, and escape hyphens`[-]`
 ```

@@ -926,6 +926,34 @@ export default Object.freeze(the_export);
 ================================================================================
 `;
 
+exports[`switch.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+switch(thing) {
+  case "hi":
+      return "sup";
+  case "ho":
+      break;
+  default:
+      throw new Error("Whoops");
+}
+
+=====================================output=====================================
+switch (thing) {
+case "hi":
+    return "sup";
+case "ho":
+    break;
+default:
+    throw new Error("Whoops");
+}
+
+================================================================================
+`;
+
 exports[`ternary_binary.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]

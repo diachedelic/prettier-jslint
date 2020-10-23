@@ -2033,28 +2033,26 @@ function printPathNoParens(path, options, print, args) {
         ),
         " {",
         n.cases.length > 0
-          ? indent(
-              concat([
+          ? concat([
+              hardline,
+              join(
                 hardline,
-                join(
-                  hardline,
-                  path.map((casePath) => {
-                    const caseNode = casePath.getValue();
-                    return concat([
-                      casePath.call(print),
-                      n.cases.indexOf(caseNode) !== n.cases.length - 1 &&
-                      isNextLineEmpty(
-                        options.originalText,
-                        caseNode,
-                        options.locEnd
-                      )
-                        ? hardline
-                        : "",
-                    ]);
-                  }, "cases")
-                ),
-              ])
-            )
+                path.map((casePath) => {
+                  const caseNode = casePath.getValue();
+                  return concat([
+                    casePath.call(print),
+                    n.cases.indexOf(caseNode) !== n.cases.length - 1 &&
+                    isNextLineEmpty(
+                      options.originalText,
+                      caseNode,
+                      options.locEnd
+                    )
+                      ? hardline
+                      : "",
+                  ]);
+                }, "cases")
+              ),
+            ])
           : "",
         hardline,
         "}",
