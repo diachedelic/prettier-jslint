@@ -5224,7 +5224,9 @@ function printBinaryishExpressions(
   const node = path.getValue();
 
   if (
+    node.left &&
     node.left.operator === "typeof" &&
+    node.right &&
     node.right.type === "StringLiteral" &&
     node.right.value === "undefined" &&
     (
