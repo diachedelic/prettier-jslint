@@ -7,8 +7,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Indentation & style (JSLint-friendly options are hardcoded)
 - Format ternaries
 - Replace camelCase local variables with snake_case
-- Replace block arrow functions (e.g. `() => {}`) with `function`, if it does not
-reference `this`.
+- Replace block arrow functions (e.g. `() => {}`) or destructured arrow functions (e.g. `({id}) => id`) with `function`, (if it does not reference `this`)
 - Replace naked blocks with self executing anonymous functions
 - Remove newline after assignment operator (`=`)
 - Frozen exports

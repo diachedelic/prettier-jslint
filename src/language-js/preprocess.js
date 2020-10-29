@@ -32,22 +32,54 @@ function make_method_chain(members, args) {
 }
 
 function add_comments(node, comments = [], trailing = false) {
-  if (comments.length === 0) {
-    return;
+  function append(node, property_name, comments) {
+    const all_comments = node[property_name] || [];
+    all_comments.push(...comments);
+    if (all_comments.length > 0) {
+      node[property_name] = all_comments;
+    }
   }
-  const props = [
-    "comments",
-    (
-      trailing
-      ? "trailingComments"
-      : "leadingComments"
-    )
+  append(node, "comments", comments);
+  append(
+    node,
+    "leadingComments",
+    comments.filter((comment) => comment.leading)
+  );
+  append(
+    node,
+    "trailingComments",
+    comments.filter((comment) => comment.trailing)
+  );
+}
+
+function uses_this(node) {
+  if (!node || typeof node.type !== "string") {
+    // not a node
+    return false;
+  }
+
+  const defines_another_this = [
+    "ClassMethod",
+    "ClassPrivateMethod",
+    "ObjectMethod",
+    "FunctionDeclaration",
+    "FunctionExpression"
   ];
-  props.forEach(function (name) {
-    node[name] = (
-      node[name] === undefined
-      ? comments
-      : node[name].concat(comments)
+
+  if (defines_another_this.includes(node.type)) {
+    return false;
+  }
+
+  if (node.type === "ThisExpression") {
+    return true;
+  }
+
+  // recurse
+  return Object.keys(node).some(function (key) {
+    return (
+      Array.isArray(node[key])
+      ? node[key].some(uses_this)
+      : uses_this(node[key])
     );
   });
 }
@@ -141,6 +173,53 @@ function replace_object_spread(path) {
   }
 }
 
+function replace_arrow_function(path) {
+  const node = path.getValue();
+  if (
+    node.type === "ArrowFunctionExpression" &&
+    node.body &&
+    node.body.type === "BlockStatement" &&
+    !uses_this(node)
+  ) {
+    node.type = "FunctionExpression";
+    return replace_node(path, node);
+  }
+
+  if (
+    node.type === "VariableDeclaration" &&
+    node.kind === "const" &&
+    node.declarations.length === 1 &&
+    node.declarations[0].init &&
+    node.declarations[0].init.type === "FunctionExpression"
+  ) {
+    const function_declaration = node.declarations[0].init;
+    function_declaration.type = "FunctionDeclaration";
+    function_declaration.id = node.declarations[0].id;
+    add_comments(function_declaration, node.comments);
+    return replace_node(path, function_declaration);
+  }
+
+  if (
+    node.type === "ArrowFunctionExpression" &&
+    node.body &&
+    node.body.type !== "BlockStatement" &&
+    node.params.some((param) => param.type === "ObjectPattern") &&
+    !uses_this(node)
+  ) {
+    node.type = "FunctionExpression";
+    node.body = {
+      type: "BlockStatement",
+      body: [
+        {
+          type: "ReturnStatement",
+          argument: node.body
+        }
+      ]
+    };
+    return replace_node(path, node);
+  }
+}
+
 function traverse(path, mutator) {
   const node = path.getValue();
   if (!node || typeof node.type !== "string") {
@@ -169,7 +248,8 @@ function traverse(path, mutator) {
 function transform_tree(ast) {
   const transforms = [
     replace_object_spread,
-    freeze_exports
+    freeze_exports,
+    replace_arrow_function
   ];
   const path = new FastPath(ast);
   return (
