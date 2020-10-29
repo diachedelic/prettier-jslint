@@ -8,7 +8,7 @@ function replace_node(path, replacement) {
   return true;
 }
 
-function make_method_chain(members, args) {
+function make_method_chain(members, ...args) {
   return {
     type: "CallExpression",
     callee: members.reduce(function (result, name) {
@@ -31,57 +31,87 @@ function make_method_chain(members, args) {
   };
 }
 
-function add_comments(node, comments = [], trailing = false) {
-  function append(node, property_name, comments) {
+function make_variable_declaration(kind, name, init) {
+  return {
+    type: "VariableDeclaration",
+    declarations: [
+      {
+        type: "VariableDeclarator",
+        id: {
+          type: "Identifier",
+          name
+        },
+        init
+      }
+    ],
+    kind
+  };
+}
+
+function add_comments(node, comments = []) {
+  function append(property_name, comments) {
     const all_comments = node[property_name] || [];
     all_comments.push(...comments);
     if (all_comments.length > 0) {
       node[property_name] = all_comments;
     }
   }
-  append(node, "comments", comments);
+  append("comments", comments);
   append(
-    node,
     "leadingComments",
     comments.filter((comment) => comment.leading)
   );
   append(
-    node,
     "trailingComments",
     comments.filter((comment) => comment.trailing)
   );
 }
 
-function uses_this(node) {
-  if (!node || typeof node.type !== "string") {
-    // not a node
-    return false;
+function add_todo(node, message) {
+  return add_comments(node, [{
+    type: "CommentTodo",
+    value: message,
+    leading: true
+  }]);
+}
+
+function some_child(node, fn) {
+  function call_if_node(node) {
+    if (node && typeof node.type === "string") {
+      return fn(node);
+    }
   }
 
+  return Object.keys(node).some(function (key) {
+    return (
+      Array.isArray(node[key])
+      ? node[key].some(call_if_node)
+      : call_if_node(node[key])
+    );
+  });
+}
+
+function defines_new_this(node) {
   const defines_another_this = [
-    "ClassMethod",
-    "ClassPrivateMethod",
+    "ClassExpression",
+    "ClassDeclaration",
     "ObjectMethod",
     "FunctionDeclaration",
     "FunctionExpression"
   ];
+  return defines_another_this.includes(node.type);
+}
 
-  if (defines_another_this.includes(node.type)) {
-    return false;
-  }
-
-  if (node.type === "ThisExpression") {
-    return true;
-  }
-
-  // recurse
-  return Object.keys(node).some(function (key) {
-    return (
-      Array.isArray(node[key])
-      ? node[key].some(uses_this)
-      : uses_this(node[key])
-    );
-  });
+function uses_this(node) {
+  return (
+    node.type === "ThisExpression"
+    ? true
+    : (
+      defines_new_this(node)
+      ? false
+      : some_child(node, uses_this)
+    )
+  );
 }
 
 // Transformers.
@@ -168,7 +198,7 @@ function replace_object_spread(path) {
 
     return replace_node(
       path,
-      make_method_chain(["Object", "assign"], assign_args)
+      make_method_chain(["Object", "assign"], ...assign_args)
     );
   }
 }

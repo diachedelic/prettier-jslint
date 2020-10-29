@@ -5566,6 +5566,8 @@ function printComment(commentPath, options) {
   const comment = commentPath.getValue();
 
   switch (comment.type) {
+    case "CommentTodo":
+      return "// TODO prettier-jslint: " + comment.value;
     case "CommentBlock":
     case "Block": {
       if (isIndentableBlockComment(comment)) {
