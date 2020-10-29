@@ -1334,13 +1334,18 @@ function printPathNoParens(path, options, print, args) {
               (property.value.type === "ObjectPattern" ||
                 property.value.type === "ArrayPattern")
           )) ||
-        (n.type !== "ObjectPattern" &&
+        (
+          n.type !== "ObjectPattern" &&
           firstProperty &&
-          hasNewlineInRange(
-            options.originalText,
-            options.locStart(n),
-            options.locStart(firstProperty)
-          ));
+          (
+            n.force_break ||
+            hasNewlineInRange(
+              options.originalText,
+              options.locStart(n),
+              options.locStart(firstProperty)
+            )
+          )
+        );
 
       const separator = isFlowInterfaceLikeBody
         ? ";"
@@ -4419,42 +4424,6 @@ function printExportDeclaration(path, options, print) {
 
   if (isDefault) {
     parts.push("default ");
-
-    const the_export = decl.declaration;
-    if (
-      the_export.type !== "CallExpression" ||
-      !(
-        (
-          the_export.callee.type === "MemberExpression" &&
-          the_export.callee.property.name === "freeze"
-        ) || (
-          the_export.callee.type === "Identifier" &&
-          the_export.callee.name === "stone"
-        )
-      )
-    ) {
-      if (the_export.type === "FunctionDeclaration") {
-        the_export.type = "FunctionExpression";
-      }
-
-      // freeze export
-      decl.declaration = {
-        type: "CallExpression",
-        arguments: [the_export],
-        callee: {
-          type: "MemberExpression",
-          computed: false,
-          object: {
-            type: "Identifier",
-            name: "Object"
-          },
-          property: {
-            type: "Identifier",
-            name: "freeze"
-          }
-        }
-      };
-    }
   }
 
   parts.push(

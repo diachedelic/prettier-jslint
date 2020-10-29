@@ -831,6 +831,103 @@ thing.map(Number.parseInt);
 ================================================================================
 `;
 
+exports[`object_spread.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+func(Object.assign({
+  thing: true,
+  stuff: {}
+}, opts));
+
+func({
+  thing: true,
+  stuff: {},
+
+  /* boo-related */
+
+  ...opts,
+
+  boo() {
+    return {
+      ...thing()
+    };
+  },
+
+  /* tail comment */
+});
+
+const x = {
+  ...foo,
+  bar,
+  ...baz
+};
+
+const y = {
+  hello: true,
+  ...({
+    goodbye: false,
+    ...x
+  })
+}
+
+=====================================output=====================================
+func(
+    Object.assign(
+        {
+            thing: true,
+            stuff: {}
+        },
+        opts
+    )
+);
+
+func(
+    Object.assign(
+        {
+            thing: true,
+            stuff: {}
+        },
+        /* boo-related */
+
+        opts,
+
+        {
+            boo() {
+                return Object.assign({}, thing());
+            }
+
+            /* tail comment */
+        }
+    )
+);
+
+const x = Object.assign(
+    {},
+    foo,
+    {
+        bar
+    },
+    baz
+);
+
+const y = Object.assign(
+    {
+        hello: true
+    },
+    Object.assign(
+        {
+            goodbye: false
+        },
+        x
+    )
+);
+
+================================================================================
+`;
+
 exports[`regex.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]

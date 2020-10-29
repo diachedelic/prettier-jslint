@@ -3,21 +3,23 @@
 This is a fork of Prettier I made to reduce the tedium of migrating a large
 javascript codebase to [JSLint](https://jslint.com/).
 
-## What's changed from upstream
+## What it does
 - Indentation & style (JSLint-friendly options are hardcoded)
-- Ternaries
-- camelCase -> snake_case local variables
-- Arrow functions
-- Naked blocks -> self executing anonymous functions
-- Assignment
+- Format ternaries
+- Replace camelCase local variables with snake_case
+- Replace block arrow functions (e.g. `() => {}`) with `function`, if it does not
+reference `this`.
+- Replace naked blocks with self executing anonymous functions
+- Remove newline after assignment operator (`=`)
 - Frozen exports
-- typeof x === "undefined" => x === undefined
-- isNaN => Number.isNaN etc
-- switch statements
-- Replace spaces in regexp with \s
-- Replaces ++/-- with +=/-= where possible
+- Replace `typeof x === "undefined"` with `x === undefined`
+- Replace `isNaN` with `Number.isNaN` etc
+- Format `switch` statements
+- Replace spaces in regexp with `\s`
+- Replace `++`/`--` with `+=`/`-=` where possible
+- Replace Object spread operator `...` with `Object.assign()`
 
-## TODO
+## What it does not do (yet)
 - Insert `/*jslint node, this, browser */` etc
 - Wrap long comments (or move to start of line)
 - Object literals (each property on separate line if multiple or :)
