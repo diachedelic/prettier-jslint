@@ -5323,8 +5323,6 @@ function nodeStr(node, options, isFlowOrTypeScriptDirectiveLiteral) {
 }
 
 function printRegex(node) {
-  node.pattern = node.pattern.replace(/ /g, "\\s");
-
   const flags = node.flags.split("").sort().join("");
   return `/${node.pattern}/${flags}`;
 }

@@ -250,6 +250,25 @@ function replace_arrow_function(path) {
   }
 }
 
+function clarify_regex(path) {
+  const node = path.getValue();
+  if (
+    node.type === "RegExpLiteral"
+  ) {
+    const pattern = node.pattern.replace(
+      new RegExp(" ", "g"),
+      "\\s"
+    );
+
+    if (pattern === node.pattern) {
+      return false;
+    }
+
+    node.pattern = pattern;
+    return replace_node(path, node);
+  }
+}
+
 function traverse(path, mutator) {
   const node = path.getValue();
   if (!node || typeof node.type !== "string") {
@@ -279,7 +298,8 @@ function transform_tree(ast) {
   const transforms = [
     replace_object_spread,
     freeze_exports,
-    replace_arrow_function
+    replace_arrow_function,
+    clarify_regex
   ];
   const path = new FastPath(ast);
   return (
