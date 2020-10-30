@@ -264,6 +264,24 @@ function abc() {
 ================================================================================
 `;
 
+exports[`comments.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+// From https://stackoverflow.com/questions/12345678/how-can-i-remove-a-buggy-service-worker-or-implement-a-kill-switch
+
+// From https://stackoverflow.com/q/33986976
+
+=====================================output=====================================
+// From https://stackoverflow.com/q/12345678
+
+// From https://stackoverflow.com/q/33986976
+
+================================================================================
+`;
+
 exports[`freeze_exports_call.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]

@@ -17,6 +17,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Replace spaces in regexp with `\s`
 - Replace `++`/`--` with `+=`/`-=` where possible
 - Replace Object spread operator `...` with `Object.assign()`
+- Shortens URLs in comments
 
 ## What it does not do (yet)
 - Insert `/*jslint node, this, browser */` etc

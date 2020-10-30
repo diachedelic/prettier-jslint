@@ -269,6 +269,25 @@ function clarify_regex(path) {
   }
 }
 
+function shorten_comments(path) {
+  const node = path.getValue();
+  if (
+    node.type === "CommentLine" ||
+    node.type === "CommentBlock"
+  ) {
+    const value = node.value.replace(
+      /\bhttps:\/\/stackoverflow\.com\/questions\/(\d+)(\/[^\s]+)?/g,
+      "https://stackoverflow.com/q/$1"
+    );
+
+    if (value === node.value) {
+      return false;
+    }
+    node.value = value;
+    return replace_node(path, node);
+  }
+}
+
 function traverse(path, mutator) {
   const node = path.getValue();
   if (!node || typeof node.type !== "string") {
@@ -299,7 +318,8 @@ function transform_tree(ast) {
     replace_object_spread,
     freeze_exports,
     replace_arrow_function,
-    clarify_regex
+    clarify_regex,
+    shorten_comments
   ];
   const path = new FastPath(ast);
   return (
