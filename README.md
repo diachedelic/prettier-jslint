@@ -20,7 +20,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Shortens URLs in comments
 
 ## What it does not do (yet)
-- Insert `/*jslint node, this, browser */` etc
+- Insert `/*jslint node, browser */` etc
 - Wrap long comments (or move to start of line)
 - Object literals (each property on separate line if multiple or :)
 - Linebreaks between multiple function parameters & destructured objects
@@ -29,6 +29,10 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Naked blocks around cases in switch
 - Undeclared 'it'
 - Use double quotes, not single quotes
+
+## What it will never do
+- Rewrite `class` syntax
+- Shorten long `import` statements
 
 ---
 
