@@ -18,6 +18,7 @@ javascript codebase to [JSLint](https://jslint.com/).
 - Replace `++`/`--` with `+=`/`-=` where possible
 - Replace Object spread operator `...` with `Object.assign()`
 - Shortens URLs in comments
+- Replaces `template ${literals}` with [fulfill](https://github.com/douglascrockford/fulfill)
 
 ## What it does not do (yet)
 - Insert `/*jslint node, browser */` etc

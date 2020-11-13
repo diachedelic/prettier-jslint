@@ -233,7 +233,11 @@ function isNextLineEmptyAfterIndex(text, index) {
  * @returns {boolean}
  */
 function isNextLineEmpty(text, node, locEnd) {
-  return isNextLineEmptyAfterIndex(text, locEnd(node));
+  return (
+    typeof node.has_trailing_empty_line === "boolean"
+    ? node.has_trailing_empty_line
+    : isNextLineEmptyAfterIndex(text, locEnd(node))
+  );
 }
 
 /**

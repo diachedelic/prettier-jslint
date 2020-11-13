@@ -8,22 +8,25 @@ function replace_node(path, replacement) {
   return true;
 }
 
+function make_identifier(name) {
+  return {
+    type: "Identifier",
+    name
+  };
+}
+
 function make_method_chain(members, ...args) {
   return {
     type: "CallExpression",
     callee: members.reduce(function (result, name) {
-      const id = {
-        type: "Identifier",
-        name
-      };
       return (
         result === undefined
-        ? id
+        ? make_identifier(name)
         : {
           type: "MemberExpression",
           object: result,
           computed: false,
-          property: id
+          property: make_identifier(name)
         }
       );
     }, undefined),
@@ -37,15 +40,44 @@ function make_variable_declaration(kind, name, init) {
     declarations: [
       {
         type: "VariableDeclarator",
-        id: {
-          type: "Identifier",
-          name
-        },
+        id: make_identifier(name),
         init
       }
     ],
     kind
   };
+}
+
+function make_string_literal(value) {
+  return {
+      type: "StringLiteral",
+      extra: {
+        rawValue: value,
+        raw: "\"" + value.replace(/\n/g, "\\n") + "\""
+      },
+      value
+  };
+}
+
+function make_import(identifier, source) {
+  return {
+      "type": "ImportDeclaration",
+      "specifiers": [
+          {
+              "type": "ImportDefaultSpecifier",
+              "local": identifier
+          }
+      ],
+      "importKind": "value",
+      "source": make_string_literal(source)
+  };
+}
+
+function append_statement(statements, landmark, node) {
+  landmark.has_trailing_empty_line = false;
+  node.has_trailing_empty_line = true;
+  const landmark_index = statements.indexOf(landmark);
+  statements.splice(landmark_index + 1, 0, node);
 }
 
 function add_comments(node, comments = []) {
@@ -114,6 +146,44 @@ function uses_this(node) {
   );
 }
 
+// Returns the identifier for the imported module.
+function add_import(path, desired_identifier, source) {
+  const statements = path.stack[0].program.body;
+  const existing = statements.find(function (node) {
+    return (
+      node.type === "ImportDeclaration" &&
+      node.source.value === source
+    );
+  });
+  if (
+    existing &&
+    existing.specifiers.length === 1 &&
+    existing.specifiers[0].type === "ImportDefaultSpecifier"
+  ) {
+    return existing.specifiers[0].local;
+  }
+  const last_import = statements.reduce(function (found, node, node_nr) {
+    if (node.type === "ImportDeclaration") {
+      return node;
+    }
+    return found;
+  }, undefined);
+  if (last_import === undefined) {
+    // throw new Error("Could not find an import list to append to.");
+    // Rely on an undeclared identifier warning.
+    return desired_identifier;
+  }
+  const the_import = make_import(desired_identifier, source);
+  last_import.has_trailing_empty_line = false;
+  the_import.has_trailing_empty_line = true;
+  append_statement(
+    statements,
+    last_import,
+    the_import
+  );
+  return desired_identifier;
+}
+
 // Transformers.
 
 function freeze_exports(path) {
@@ -143,14 +213,8 @@ function freeze_exports(path) {
         callee: {
           type: "MemberExpression",
           computed: false,
-          object: {
-            type: "Identifier",
-            name: "Object"
-          },
-          property: {
-            type: "Identifier",
-            name: "freeze"
-          }
+          object: make_identifier("Object"),
+          property: make_identifier("freeze")
         }
       };
 
@@ -288,6 +352,48 @@ function shorten_comments(path) {
   }
 }
 
+function replace_megastrings(path) {
+  const node = path.getValue();
+  if (
+    node.type === "TemplateLiteral" &&
+    path.getParentNode().type !== "TaggedTemplateExpression"
+  ) {
+    if (node.expressions.length === 0) {
+      return replace_node(
+        path,
+        make_string_literal(node.quasis[0].value.cooked)
+      );
+    }
+    const fulfill_identifier = add_import(
+      path,
+      make_identifier("fulfill"),
+      process.env.CROCKFORD_FULFILL_SOURCE || "@douglascrockford/fulfill.js"
+    );
+    const call = {
+      "type": "CallExpression",
+      "callee": fulfill_identifier,
+      "arguments": [
+          make_string_literal(
+            node.quasis.reduce(function (string, quasis, quasis_nr) {
+              const part = quasis.value.cooked;
+              return (
+                string === undefined
+                ? part
+                : string + "{" + String(quasis_nr - 1) + "}" + part
+              );
+            }, undefined)
+          ),
+          {
+              "type": "ArrayExpression",
+              "elements": node.expressions
+          }
+      ]
+    };
+    add_comments(call, node.comments);
+    return replace_node(path, call);
+  }
+}
+
 function traverse(path, mutator) {
   const node = path.getValue();
   if (!node || typeof node.type !== "string") {
@@ -319,7 +425,8 @@ function transform_tree(ast) {
     freeze_exports,
     replace_arrow_function,
     clarify_regex,
-    shorten_comments
+    shorten_comments,
+    replace_megastrings,
   ];
   const path = new FastPath(ast);
   return (

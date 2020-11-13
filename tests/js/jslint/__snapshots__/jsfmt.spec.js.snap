@@ -455,6 +455,50 @@ while (a++) {
 ================================================================================
 `;
 
+exports[`megastrings.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+// Some leading comment
+
+import something from "something.js";
+
+fulfill(
+  '"{0} (via Some Org)" <{1}>',
+  [from, sender.email]
+);
+
+\`"\${from} (via Some Org)" <\${sender.email}>\`;
+
+\`hi,
+it's \${name}. \`;
+
+a(\`Formatting
+only\`);
+
+tag\`something\`;
+
+=====================================output=====================================
+// Some leading comment
+
+import something from "something.js";
+import fulfill from "@douglascrockford/fulfill.js";
+
+fulfill('"{0} (via Some Org)" <{1}>', [from, sender.email]);
+
+fulfill('"{0} (via Some Org)" <{1}>', [from, sender.email]);
+
+fulfill("hi,\\nit's {0}. ", [name]);
+
+a("Formatting\\nonly");
+
+tag\`something\`;
+
+================================================================================
+`;
+
 exports[`method_chaining.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]
@@ -737,9 +781,9 @@ action$.ofType(
         action$.ofType(ActionTypes.CLEARED_SEARCH_RESULTS)
     ).mergeMap(
         () => Observable.merge(
-            Observable.of(replace(\`?q=\${q}\`)),
+            Observable.of(replace(fulfill("?q={0}", [q]))),
             ajax.getJSON(
-                \`https://api.github.com/search/users?q=\${q}\`
+                fulfill("https://api.github.com/search/users?q={0}", [q])
             ).map(
                 (res) => res.items
             ).map(
