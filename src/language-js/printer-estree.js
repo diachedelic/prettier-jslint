@@ -122,6 +122,21 @@ const {
 const { printModuleSource, printModuleSpecifiers } = require("./print/module");
 const printTernaryOperator = require("./print/ternary");
 
+const {
+  replace_node,
+  make_identifier,
+  make_method_chain,
+  make_variable_declaration,
+  make_string_literal,
+  make_import,
+  append_statement,
+  add_comments,
+  add_todo,
+  some_child,
+  defines_new_this,
+  uses_this
+} = require("./jslint.js");
+
 const needsQuoteProps = new WeakMap();
 
 let uid = 0;
@@ -1700,7 +1715,45 @@ function printPathNoParens(path, options, print, args) {
       if (typeof n.value !== "string") {
         return "" + n.value;
       }
-      return nodeStr(n, options);
+      const printed = nodeStr(n, options);
+      if (path.getParentNode().is_broken || n.value.length < 12) {
+        return printed;
+      }
+      const [start, end] = (function break_string_approx_in_half(string) {
+        if (string.length < 2) {
+          return string;
+        }
+        let halfway = Math.floor(string.length / 2);
+        const boundary_match = string.slice(halfway).match(/\s[^\s]/);
+        if (boundary_match) {
+          halfway += boundary_match.index + 1;
+        }
+        return [
+          string.slice(0, halfway),
+          string.slice(halfway)
+        ];
+      }(n.value));
+      replace_node(path, {
+        type: "BinaryExpression",
+        left: make_string_literal(start),
+        right: make_string_literal(end),
+        operator: "+",
+        is_broken: true
+      });
+      const printed_broken = printBinaryishExpressions(
+        path,
+        print,
+        options,
+        false,
+        false
+      );
+      replace_node(path, n);
+      return group(
+        ifBreak(
+          concat(printed_broken),
+          printed,
+        )
+      );
     case "Directive":
       return path.call(print, "value"); // Babel 6
     case "DirectiveLiteral":

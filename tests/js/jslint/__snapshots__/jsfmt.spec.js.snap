@@ -455,6 +455,45 @@ while (a++) {
 ================================================================================
 `;
 
+exports[`long_string_literals.js format 1`] = `
+====================================options=====================================
+parsers: ["babel"]
+printWidth: 80
+                                                                                | printWidth
+=====================================input======================================
+here_is_my_super_long_function_wow(
+    "here is my super long string, wow, it is so it is so it is so it is so it is so it is so it is so long!"
+);
+
+b('my "quoted" string');
+
+b("a" + "b" + "c");
+
+if ("here is my super long string, wow, it is so it is so it is so it is so it is so it is so it is so long!") {
+  var my_little_variable = "here is my super long string, wow, it is so it is so it is so it is so it is so it is so it is so long!";
+}
+
+=====================================output=====================================
+here_is_my_super_long_function_wow(
+    "here is my super long string, wow, it is so it is so " +
+    "it is so it is so it is so it is so it is so long!"
+);
+
+b("my \\"quoted\\" string");
+
+b("a" + "b" + "c");
+
+if (
+    "here is my super long string, wow, it is so it is so " +
+    "it is so it is so it is so it is so it is so long!"
+) {
+    var my_little_variable = "here is my super long string, wow, it is so it is so " +
+    "it is so it is so it is so it is so it is so long!";
+}
+
+================================================================================
+`;
+
 exports[`megastrings.js format 1`] = `
 ====================================options=====================================
 parsers: ["babel"]
@@ -486,9 +525,9 @@ tag\`something\`;
 import something from "something.js";
 import fulfill from "@douglascrockford/fulfill.js";
 
-fulfill('"{0} (via Some Org)" <{1}>', [from, sender.email]);
+fulfill("\\"{0} (via Some Org)\\" <{1}>", [from, sender.email]);
 
-fulfill('"{0} (via Some Org)" <{1}>', [from, sender.email]);
+fulfill("\\"{0} (via Some Org)\\" <{1}>", [from, sender.email]);
 
 fulfill("hi,\\nit's {0}. ", [name]);
 
@@ -1787,7 +1826,8 @@ const payment_message = (
             : (
                 state == "invalid_expiry"
                 ? "Expiry must be sometime in the past."
-                : "There was an issue with the payment.  Please contact support."
+                : "There was an issue with the payment.  " +
+                "Please contact support."
             )
         )
     )
