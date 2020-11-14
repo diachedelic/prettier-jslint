@@ -1716,23 +1716,32 @@ function printPathNoParens(path, options, print, args) {
         return "" + n.value;
       }
       const printed = nodeStr(n, options);
-      if (path.getParentNode().is_broken || n.value.length < 12) {
+      if (n.value.length < 12) {
         return printed;
       }
-      const [start, end] = (function break_string_approx_in_half(string) {
-        if (string.length < 2) {
-          return string;
+      function break_string_approx_in_half(string) {
+        // Prefer to break on newlines.
+        const newline_match = string.match(/\n[^\n]/);
+        if (newline_match) {
+          const cut = newline_match.index + 1;
+          return [
+            string.slice(0, cut),
+            string.slice(cut)
+          ];
         }
+        // Otherwise break on spaces, if possible.
         let halfway = Math.floor(string.length / 2);
-        const boundary_match = string.slice(halfway).match(/\s[^\s]/);
-        if (boundary_match) {
-          halfway += boundary_match.index + 1;
+        const end = string.slice(halfway);
+        const space_match = end.match(/\s[^\s]/);
+        if (space_match) {
+          halfway += space_match.index + 1;
         }
         return [
           string.slice(0, halfway),
           string.slice(halfway)
         ];
-      }(n.value));
+      }
+      const [start, end] = break_string_approx_in_half(n.value);
       replace_node(path, {
         type: "BinaryExpression",
         left: make_string_literal(start),
