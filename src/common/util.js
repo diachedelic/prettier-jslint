@@ -405,7 +405,7 @@ function printString(raw, options, isDirectiveLiteral) {
       ? '"'
       : options.__isInHtmlAttribute
       ? "'"
-      : getPreferredQuote(raw, options.singleQuote ? "'" : '"');
+      : '"';
 
   // Directives are exact code unit sequences, which means that you can't
   // change the escape sequences they use.
