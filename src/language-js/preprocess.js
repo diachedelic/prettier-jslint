@@ -226,7 +226,14 @@ function replace_megastrings(path) {
   const node = path.getValue();
   if (
     node.type === "TemplateLiteral" &&
-    path.getParentNode().type !== "TaggedTemplateExpression"
+    path.getParentNode().type !== "TaggedTemplateExpression" &&
+    !node.quasis.some(
+      (quasis) => quasis.value.cooked.split("\n").slice(1).some(
+        // Check for indentation - usually a sign we should leave this
+        // template literal alone.
+        (part) => part.startsWith(" ")
+      )
+    )
   ) {
     if (node.expressions.length === 0) {
       return replace_node(

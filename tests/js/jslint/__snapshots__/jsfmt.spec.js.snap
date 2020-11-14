@@ -514,10 +514,30 @@ fulfill(
 \`hi,
 it's \${name}. \`;
 
-a(\`Formatting
-only\`);
+a(\`Single
+newline\`);
+
+a(\`Multi
+mutil
+newline\`);
+
+a(\`<a>
+   <indent>
+</a>\`);
 
 tag\`something\`;
+
+const emptyCountryCode = {
+  script: {
+    script: \`
+      if (_source.containsKey('countryCode')) {
+        return _source.countryCode == null || _source.countryCode.length() == 0;
+      } else {
+        return true;
+      }
+    \`,
+  },
+};
 
 =====================================output=====================================
 // Some leading comment
@@ -531,9 +551,27 @@ fulfill("\\"{0} (via Some Org)\\" <{1}>", [from, sender.email]);
 
 fulfill("hi,\\nit's {0}. ", [name]);
 
-a("Formatting\\nonly");
+a("Single\\nnewline");
+
+a("Multi\\nmutil\\nnewline");
+
+a(\`<a>
+   <indent>
+</a>\`);
 
 tag\`something\`;
+
+const empty_country_code = {
+    script: {
+        script: \`
+      if (_source.containsKey('countryCode')) {
+        return _source.countryCode == null || _source.countryCode.length() == 0;
+      } else {
+        return true;
+      }
+    \`
+    }
+};
 
 ================================================================================
 `;
