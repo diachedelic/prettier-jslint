@@ -1756,7 +1756,7 @@ function printPathNoParens(path, options, print, args) {
         false,
         false
       );
-      replace_node(path, n);
+      replace_node(path, n, false);
       return group(
         ifBreak(
           concat(printed_broken),

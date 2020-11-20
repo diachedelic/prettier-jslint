@@ -274,10 +274,28 @@ printWidth: 80
 
 // From https://stackoverflow.com/q/33986976
 
+const cacheGroups = {
+  browser: [
+    "bro-fs",
+    "jeep-localforage",
+    // TODO include core only
+    // '@ionic/pwa-elements',
+  ],
+}
+
 =====================================output=====================================
 // From https://stackoverflow.com/q/12345678
 
 // From https://stackoverflow.com/q/33986976
+
+const cache_groups = {
+    browser: [
+        "bro-fs",
+        "jeep-localforage"
+        // TODO include core only
+        // '@ionic/pwa-elements',
+    ]
+};
 
 ================================================================================
 `;

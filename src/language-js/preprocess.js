@@ -159,7 +159,6 @@ function replace_arrow_function(path) {
     const function_declaration = node.declarations[0].init;
     function_declaration.type = "FunctionDeclaration";
     function_declaration.id = node.declarations[0].id;
-    add_comments(function_declaration, node.comments);
     return replace_node(path, function_declaration);
   }
 
@@ -266,7 +265,6 @@ function replace_megastrings(path) {
           }
       ]
     };
-    add_comments(call, node.comments);
     return replace_node(path, call);
   }
 }

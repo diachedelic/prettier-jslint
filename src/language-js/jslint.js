@@ -1,4 +1,27 @@
-function replace_node(path, replacement) {
+function add_comments(node, comments = []) {
+  function append(property_name, comments) {
+    const all_comments = node[property_name] || [];
+    all_comments.push(...comments);
+    if (all_comments.length > 0) {
+      node[property_name] = all_comments;
+    }
+  }
+  append("comments", comments);
+  append(
+    "leadingComments",
+    comments.filter((comment) => comment.leading)
+  );
+  append(
+    "trailingComments",
+    comments.filter((comment) => comment.trailing)
+  );
+}
+
+function replace_node(path, replacement, copy_comments = true) {
+  const original = path.getValue();
+  if (copy_comments && original !== replacement) {
+    add_comments(replacement, original.comments);
+  }
   path.stack[path.stack.length - 3][path.getName()] = replacement;
   path.stack[path.stack.length - 1] = replacement;
   return true;
@@ -74,25 +97,6 @@ function append_statement(statements, landmark, node) {
   node.has_trailing_empty_line = true;
   const landmark_index = statements.indexOf(landmark);
   statements.splice(landmark_index + 1, 0, node);
-}
-
-function add_comments(node, comments = []) {
-  function append(property_name, comments) {
-    const all_comments = node[property_name] || [];
-    all_comments.push(...comments);
-    if (all_comments.length > 0) {
-      node[property_name] = all_comments;
-    }
-  }
-  append("comments", comments);
-  append(
-    "leadingComments",
-    comments.filter((comment) => comment.leading)
-  );
-  append(
-    "trailingComments",
-    comments.filter((comment) => comment.trailing)
-  );
 }
 
 function add_todo(node, message) {
