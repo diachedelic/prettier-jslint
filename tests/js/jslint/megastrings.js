@@ -16,7 +16,7 @@ a(`Single
 newline`);
 
 a(`Multi
-mutil
+multi
 newline`);
 
 a(`<a>
@@ -36,3 +36,10 @@ const emptyCountryCode = {
     `,
   },
 };
+
+// Just end.
+`here is a ${fruit}`; // end
+// Just start.
+`${there} is a fruit`; // start
+// Start and end.
+`${there} is a ${fruit}`; // start and end

@@ -8,6 +8,7 @@ const {
   make_variable_declaration,
   make_string_literal,
   make_import,
+  make_concat,
   append_statement,
   add_comments,
   add_todo,
@@ -240,10 +241,42 @@ function replace_megastrings(path) {
         make_string_literal(node.quasis[0].value.cooked)
       );
     }
+    if (
+      node.expressions.length === 1 &&
+      node.quasis[1].value.cooked === ""
+    ) {
+      return replace_node(path, make_concat(
+        make_string_literal(node.quasis[0].value.cooked),
+        node.expressions[0]
+      ));
+    }
+    if (
+      node.expressions.length === 1 &&
+      node.quasis[0].value.cooked === ""
+    ) {
+      return replace_node(path, make_concat(
+        node.expressions[0],
+        make_string_literal(node.quasis[1].value.cooked)
+      ));
+    }
+    if (
+      node.expressions.length === 2 &&
+      node.quasis[0].value.cooked === "" &&
+      node.quasis[2].value.cooked === ""
+    ) {
+      return replace_node(path, make_concat(
+        make_concat(
+          node.expressions[0],
+          make_string_literal(node.quasis[1].value.cooked)
+        ),
+        node.expressions[1]
+      ));
+    }
+
     const fulfill_identifier = add_import(
       path,
       make_identifier("fulfill"),
-      process.env.CROCKFORD_FULFILL_SOURCE || "@douglascrockford/fulfill.js"
+      process.env.JSLINT_FULFILL_SOURCE || "@douglascrockford/fulfill.js"
     );
     const call = {
       "type": "CallExpression",

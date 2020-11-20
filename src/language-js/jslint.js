@@ -92,6 +92,15 @@ function make_import(identifier, source) {
   };
 }
 
+function make_concat(left, right) {
+  return {
+    type: "BinaryExpression",
+    left,
+    right,
+    operator: "+"
+  };
+}
+
 function append_statement(statements, landmark, node) {
   landmark.has_trailing_empty_line = false;
   node.has_trailing_empty_line = true;
@@ -153,6 +162,7 @@ module.exports = Object.freeze({
   make_variable_declaration,
   make_string_literal,
   make_import,
+  make_concat,
   append_statement,
   add_comments,
   add_todo,

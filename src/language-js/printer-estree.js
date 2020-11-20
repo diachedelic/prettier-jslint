@@ -129,6 +129,7 @@ const {
   make_variable_declaration,
   make_string_literal,
   make_import,
+  make_concat,
   append_statement,
   add_comments,
   add_todo,
@@ -1742,13 +1743,16 @@ function printPathNoParens(path, options, print, args) {
         ];
       }
       const [start, end] = break_string_approx_in_half(n.value);
-      replace_node(path, {
-        type: "BinaryExpression",
-        left: make_string_literal(start),
-        right: make_string_literal(end),
-        operator: "+",
-        is_broken: true
-      });
+      replace_node(
+        path,
+        Object.assign(
+          make_concat(
+            make_string_literal(start),
+            make_string_literal(end)
+          ),
+          {is_broken: true}
+        )
+      );
       const printed_broken = printBinaryishExpressions(
         path,
         print,

@@ -593,7 +593,7 @@ a(\`Single
 newline\`);
 
 a(\`Multi
-mutil
+multi
 newline\`);
 
 a(\`<a>
@@ -614,6 +614,13 @@ const emptyCountryCode = {
   },
 };
 
+// Just end.
+\`here is a \${fruit}\`; // end
+// Just start.
+\`\${there} is a fruit\`; // start
+// Start and end.
+\`\${there} is a \${fruit}\`; // start and end
+
 =====================================output=====================================
 // Some leading comment
 
@@ -628,7 +635,7 @@ fulfill("hi,\\nit's {0}. ", [name]);
 
 a("Single\\nnewline");
 
-a("Multi\\nmutil\\nnewline");
+a("Multi\\nmulti\\nnewline");
 
 a(\`<a>
    <indent>
@@ -647,6 +654,13 @@ const empty_country_code = {
     \`
     }
 };
+
+// Just end.
+"here is a " + fruit; // end
+// Just start.
+there + " is a fruit"; // start
+// Start and end.
+there + " is a " + fruit; // start and end
 
 ================================================================================
 `;
@@ -933,9 +947,9 @@ action$.ofType(
         action$.ofType(ActionTypes.CLEARED_SEARCH_RESULTS)
     ).mergeMap(
         () => Observable.merge(
-            Observable.of(replace(fulfill("?q={0}", [q]))),
+            Observable.of(replace("?q=" + q)),
             ajax.getJSON(
-                fulfill("https://api.github.com/search/users?q={0}", [q])
+                "https://api.github.com/search/users?q=" + q
             ).map(
                 (res) => res.items
             ).map(
