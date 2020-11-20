@@ -189,16 +189,20 @@ function clarify_regex(path) {
   if (
     node.type === "RegExpLiteral"
   ) {
-    const pattern = node.pattern.replace(
+    const clarified_pattern = node.pattern.replace(
+      // Replace spaces with \s.
       new RegExp(" ", "g"),
       "\\s"
+    ).replace(
+      // Escape any unescaped forward slashes.
+      /(?<!\\)\//g, "\\/"
     );
 
-    if (pattern === node.pattern) {
+    if (clarified_pattern === node.pattern) {
       return false;
     }
 
-    node.pattern = pattern;
+    node.pattern = clarified_pattern;
     return replace_node(path, node);
   }
 }
@@ -334,7 +338,7 @@ function transform_tree(ast) {
     replace_arrow_function,
     clarify_regex,
     shorten_comments,
-    replace_megastrings,
+    replace_megastrings
   ];
   const path = new FastPath(ast);
   return (
