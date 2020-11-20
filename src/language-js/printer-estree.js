@@ -1692,7 +1692,7 @@ function printPathNoParens(path, options, print, args) {
     case "NullLiteral": // Babel 6 Literal split
       return "null";
     case "RegExpLiteral": // Babel 6 Literal split
-      return printRegex(n);
+      return printRegex(n, path);
     case "NumericLiteral": // Babel 6 Literal split
       return printNumber(n.extra.raw);
     case "DecimalLiteral":
@@ -1704,7 +1704,7 @@ function printPathNoParens(path, options, print, args) {
     case "StringLiteral": // Babel 6 Literal split
     case "Literal":
       if (n.regex) {
-        return printRegex(n.regex);
+        return printRegex(n.regex, path);
       }
       // typescript
       if (n.bigint) {
@@ -5388,9 +5388,20 @@ function nodeStr(node, options, isFlowOrTypeScriptDirectiveLiteral) {
   return printString(raw, options, isDirectiveLiteral);
 }
 
-function printRegex(node) {
+function printRegex(node, path) {
+  const is_called = (
+    path.getParentNode().type === "MemberExpression" &&
+    path.getNode(2).type === "CallExpression"
+  );
+  if (true) {}
   const flags = node.flags.split("").sort().join("");
-  return `/${node.pattern}/${flags}`;
+  return group(
+    concat([
+      is_called ? "(" : "",
+      "/" + node.pattern + "/" + flags,
+      is_called ? ")" : ""
+    ])
+  );
 }
 
 function exprNeedsASIProtection(path, options) {
