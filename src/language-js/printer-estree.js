@@ -174,11 +174,26 @@ function rename(name) {
   const camel_rx = /([A-Z])(?=[A-Z][a-z0-9]{2,})|([a-z0-9])(?=[A-Z])/g;
   const parts = name.replace(camel_rx, "$& ").split(" ");
   return parts.map(function (part) {
-    return (
-      /[A-Z]{2,}/.test(part)
-      ? part // acronym
-      : part.toLowerCase()
-    );
+    // Douglas Crockford seems to advocate uppercasing acronyms in JavaScript
+    // identifiers. My problem with this is that, as I want to keep the
+    // filename the same as the identifier, the filename will also contain
+    // uppercase characters. However, I want to make filenames consistent
+    // across file formats (e.g. images, Vue SFCs, JavaScript modules). There
+    // is a JavaScript convention not to capitalise identifiers in JS unless
+    // they refer to prototypal constructor functions.
+
+    // Because I do not want to apply this JavaScript naming convention to
+    // the filename of any file, but want a consistent file naming
+    // convention, I am vetoing uppercase characters in JS identifiers.
+
+    // Below is the code which used to allow uppercase acronyms.
+
+    // return (
+    //   /[A-Z]{2,}/.test(part)
+    //   ? part // acronym
+    //   : part.toLowerCase()
+    // );
+    return part.toLowerCase();
   }).join("_");
 }
 
